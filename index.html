@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lanzarse a la deriva</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <!-- Cursor custom -->
+    <div id="custom-cursor"></div>
+
+    <!-- Pantalla mapa inicial -->
+    <div id="map-screen">
+        <div class="map-container">
+            <div class="info-corner top-left">29/01/2026</div>
+            <div class="info-corner top-right">16-20 h</div>
+            <div class="info-corner bottom">
+                LANZARSE A LA deriva
+                <br>
+                DISEÑO Y GESTIÓN DE UN RECORRIDO URBANO<br>
+            </div>
+
+            <!-- Puntos navegables -->
+            <div class="dot" id="dot-contexto" style="top: 15%; left: 10%;" data-section="contexto" data-x="10" data-y="15">
+                <span class="dot-label">CONTEXTO</span>
+            </div>
+            <div class="dot" id="dot-objetivos" style="top: 25%; left: 25%;" data-section="objetivos" data-x="25" data-y="25">
+                <span class="dot-label">OBJETIVOS</span>
+            </div>
+            <div class="dot" id="dot-programa" style="top: 35%; left: 15%;" data-section="programa" data-x="15" data-y="35">
+                <span class="dot-label">PROGRAMA</span>
+            </div>
+            <div class="dot" id="dot-participantes" style="top: 45%; left: 35%;" data-section="participantes" data-x="35" data-y="45">
+                <span class="dot-label">PARTICIPANTES</span>
+            </div>
+            <div class="dot" id="dot-metodologia" style="top: 30%; left: 50%;" data-section="metodologia" data-x="50" data-y="30">
+                <span class="dot-label">METODOLOGÍA</span>
+            </div>
+            <div class="dot" id="dot-resultados" style="top: 55%; left: 60%;" data-section="resultados" data-x="60" data-y="55">
+                <span class="dot-label">RESULTADOS</span>
+            </div>
+            <div class="dot" id="dot-aprendizajes" style="top: 65%; left: 45%;" data-section="aprendizajes" data-x="45" data-y="65">
+                <span class="dot-label">APRENDIZAJES</span>
+            </div>
+            <div class="dot" id="dot-recursos" style="top: 70%; left: 75%;" data-section="recursos" data-x="75" data-y="70">
+                <span class="dot-label">RECURSOS</span>
+            </div>
+
+            <!-- Contenedor para líneas dinámicas -->
+            <svg id="lines-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+            </svg>
+        </div>
+    </div>
+
+    <!-- Botón volver -->
+    <div class="back-nav" style="display: none;">← mapa</div>
+
+    <!-- Contenido de secciones -->
+    <div id="content">
+        <section id="contexto">
+            <h1>contexto</h1>
+            <div class="text-block">
+                <p>Diseñar una ruta urbana supone realizar un ejercicio de escucha de la ciudad que atiende tanto a las huellas que han ido componiendo el paisaje como a las formas de vida que la conforman, que va de lo visible a lo invisible.</p>
+                <p>Caminar es una forma de pensar la ciudad en la que el cuerpo, el movimiento y el espacio se cruzan, es una manera de hablar con nuestro entorno, de hacerle preguntas y de escribir nuevas historias, practicando otras formas de hacer hablar al paisaje cotidiano.</p>
+            </div>
+            <div class="placeholder">
+                [ imágenes del contexto / mapas / referencias visuales ]
+            </div>
+        </section>
+
+        <section id="objetivos">
+            <h1>objetivos</h1>
+            <div class="placeholder">
+                [ aprendizajes esperados / competencias / reflexiones ]
+            </div>
+        </section>
+
+        <section id="programa">
+            <h1>programa</h1>
+            
+            <div class="timeline-item">
+                <div class="time">16:00 - 16:15h</div>
+                <div>Presentación del curso</div>
+                <div class="placeholder" style="margin-top: 15px;">
+                    [ introducción / dinámica ]
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="time">16:15 - 16:45h</div>
+                <div>Salida al espacio asignado</div>
+                <div>Observación y toma de imágenes por grupos</div>
+                <div class="placeholder" style="margin-top: 15px;">
+                    [ documentación fotográfica ]
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="time">16:45 - 17:25h</div>
+                <div>Puesta en común y feedback</div>
+                <div class="placeholder" style="margin-top: 15px;">
+                    [ notas / insights ]
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="time">17:25 - 17:35h</div>
+                <div>Introducción al prototipado</div>
+                <div class="placeholder" style="margin-top: 15px;">
+                    [ metodología / referencias ]
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="time">17:35 - 18:00h</div>
+                <div>Presentación teórica</div>
+                <div>Formatos de diseño y activación de paradas</div>
+                <div class="placeholder" style="margin-top: 15px;">
+                    [ conceptos / herramientas ]
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="time">18:00 - 18:45h</div>
+                <div>Trabajo grupal</div>
+                <div class="placeholder" style="margin-top: 15px;">
+                    [ proceso / propuestas ]
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="time">18:45 - 19:25h</div>
+                <div>Puesta en común</div>
+                <div class="placeholder" style="margin-top: 15px;">
+                    [ documentación / feedback ]
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="time">18:25 - 19:35h</div>
+                <div>Bloque de gestión</div>
+                <div class="placeholder" style="margin-top: 15px;">
+                    [ sostenibilidad / ética / financiación ]
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="time">19:35 - 20:00h</div>
+                <div>Dinámica de debate y cierre</div>
+                <div class="placeholder" style="margin-top: 15px;">
+                    [ reflexiones / evaluación ]
+                </div>
+            </div>
+        </section>
+
+        <section id="participantes">
+            <h1>participantes</h1>
+            
+            <div class="grid">
+                <div class="card">
+                    <h2>La Liminal</h2>
+                    <p>Colectivo de mediación cultural que investiga sobre la ciudad y utiliza el recorrido urbano como herramienta central.</p>
+                    <div class="placeholder">
+                        [ info / foto ]
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Desmusea</h2>
+                    <p>Colectivo de mediación cultural digital.</p>
+                    <div class="placeholder">
+                        [ info / rol ]
+                    </div>
+                </div>
+            </div>
+
+            <div class="placeholder">
+                [ info participantes: perfiles / intereses ]
+            </div>
+        </section>
+
+        <section id="metodologia">
+            <h1>metodología</h1>
+            <div class="placeholder">
+                [ enfoque pedagógico / dinámicas / herramientas / trabajo colaborativo ]
+            </div>
+        </section>
+
+        <section id="resultados">
+            <h1>resultados</h1>
+            
+            <div class="text-block">
+                <p>Los tres grupos diseñaron recorridos urbanos experimentales, explorando diferentes formas de activar y narrar el espacio público.</p>
+            </div>
+
+            <div class="placeholder" style="min-height: 400px;">
+                [ MAPA GENERAL ]<br><br>
+                imagen / iframe / collage
+            </div>
+
+            <h2 style="margin-top: 60px;">recorridos diseñados</h2>
+
+            <div class="card" style="margin-bottom: 40px;">
+                <h2>grupo 1</h2>
+                <div class="placeholder">[ mapa ]</div>
+                <p style="margin-top: 20px;"><strong>Título:</strong> [ nombre ]</p>
+                <p>[ descripción ]</p>
+                <div style="margin-top: 20px;">
+                    <strong>Paradas:</strong><br>
+                    • [ parada 1 ]<br>
+                    • [ parada 2 ]<br>
+                    • [ parada 3 ]
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 40px;">
+                <h2>grupo 2</h2>
+                <div class="placeholder">[ mapa ]</div>
+                <p style="margin-top: 20px;"><strong>Título:</strong> [ nombre ]</p>
+                <p>[ descripción ]</p>
+                <div style="margin-top: 20px;">
+                    <strong>Paradas:</strong><br>
+                    • [ parada 1 ]<br>
+                    • [ parada 2 ]<br>
+                    • [ parada 3 ]
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 40px;">
+                <h2>grupo 3</h2>
+                <div class="placeholder">[ mapa ]</div>
+                <p style="margin-top: 20px;"><strong>Título:</strong> [ nombre ]</p>
+                <p>[ descripción ]</p>
+                <div style="margin-top: 20px;">
+                    <strong>Paradas:</strong><br>
+                    • [ parada 1 ]<br>
+                    • [ parada 2 ]<br>
+                    • [ parada 3 ]
+                </div>
+            </div>
+        </section>
+        [ CLICK TO NAVIGATE ]
+
+        <section id="aprendizajes">
+            <h1>aprendizajes</h1>
+            <div class="placeholder">
+                [ reflexiones / aprendizajes clave / preguntas / retos ]
+            </div>
+
+            <h2 style="margin-top: 60px;">cuestiones de gestión</h2>
+            <div class="placeholder">
+                [ sostenibilidad / planificación / financiación / ética / accesibilidad ]
+            </div>
+        </section>
+
+        <section id="recursos">
+            <h1>recursos</h1>
+            <div class="placeholder">
+                [ referencias / proyectos similares / herramientas / materiales ]
+            </div>
+        </section>
+
+        <footer>
+            <p>TANDEM · La Liminal</p>
+            <p style="margin-top: 10px;">enero 2026</p>
+        </footer>
+    </div>
+<script src="./script.js"></script>
+</body>
+</html>

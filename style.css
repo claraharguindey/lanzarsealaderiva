@@ -5,7 +5,6 @@
     cursor: crosshair;
 }
 
-/* Flor de Ruina - Germen */
 @font-face {
     font-family: 'Flor de Ruina';
     src: url('./fonts/FlorDeRuina-Germen.woff') format('woff');
@@ -21,7 +20,7 @@
 :root {
     --color-background: #fafaf8;
     --color-surface: #ededea;
-    --color-text: #3d5a80; /* AZUL */
+    --color-text: #3d5a80;
     --color-accent: #3d5a80;
     --color-accent-light: #98c1d9;
     --color-border: #d4d3cc;
@@ -34,7 +33,7 @@
 
 body {
     font-family: 'Ronzino', serif;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.7;
     background: var(--color-background);
     color: var(--color-text);
@@ -43,7 +42,7 @@ body {
 
 h1 {
     font-family: 'Flor de Ruina', serif;
-    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-weight: 200;
     line-height: 1.1;
     color: var(--color-text);
@@ -51,7 +50,7 @@ h1 {
 }
 
 h2 {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     margin-bottom: var(--spacing-md);
     text-transform: uppercase;
@@ -60,16 +59,16 @@ h2 {
 }
 
 h3 {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     margin-bottom: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--color-accent);
 }
 
 .text-block {
-    max-width: 65ch;
     margin-bottom: var(--spacing-lg);
 }
 
@@ -77,7 +76,6 @@ h3 {
     margin-bottom: var(--spacing-md);
 }
 
-/* Pantalla inicial con puntos interactivos */
 #map-screen {
     width: 100vw;
     height: 100vh;
@@ -129,13 +127,6 @@ h3 {
     text-align: center;
 }
 
-
-.info-corner.bottom {
-    bottom: var(--spacing-md);
-    left: var(--spacing-md);
-    max-width: 600px;
-}
-
 .info-corner.top-center h1 {
     margin-bottom: 0;
     text-transform: uppercase;
@@ -145,12 +136,6 @@ h3 {
     font-size: 18px;
 }
 
-.info-corner.bottom p {
-    font-size: 16px;
-    opacity: 0.8;
-}
-
-/* Puntos clicables tipo deriva */
 .dot {
     position: absolute;
     width: 10px;
@@ -164,7 +149,7 @@ h3 {
 
 .dot:hover {
     background: var(--color-accent);
-    transform: scale(2.5);
+    transform: scale(2);
 }
 
 .dot-label {
@@ -172,7 +157,7 @@ h3 {
     top: -20px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 6px;
+    font-size: 8px;
     white-space: nowrap;
     opacity: 0;
     transition: opacity 0.3s;
@@ -185,29 +170,6 @@ h3 {
     opacity: 1;
 }
 
-.line {
-    position: absolute;
-    height: 2px;
-    background: var(--color-accent-light);
-    transform-origin: left center;
-    opacity: 0;
-    transition: opacity 0.5s, width 0.5s;
-}
-
-.line.active {
-    opacity: 1;
-    animation: drawLine 0.5s ease-out;
-}
-
-@keyframes drawLine {
-    from { 
-        transform: scaleX(0);
-    }
-    to { 
-        transform: scaleX(1);
-    }
-}
-
 .dot.visited {
     background: var(--color-accent);
 }
@@ -217,7 +179,6 @@ h3 {
     transform: scale(2);
 }
 
-/* Contenido de secciones */
 #content {
     display: none;
     padding: var(--spacing-xl) var(--spacing-lg);
@@ -280,32 +241,24 @@ section.active {
     background: var(--color-surface);
 }
 
-/* ESTILOS MIRADAS */
 .mirada-card {
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-md);
-    background: white;
-}
-
-.mirada-card:hover {
-    border-color: var(--color-accent-light);
 }
 
 .mirada-card h3 {
     margin-bottom: var(--spacing-md);
 }
 
-/* GENERADOR DE MIRADAS */
 .generador-container {
     border: 2px solid var(--color-accent);
     padding: var(--spacing-xl) var(--spacing-lg);
     text-align: center;
     margin: var(--spacing-lg) 0;
-    background: white;
 }
 
 .pregunta-generador {
-    font-size: 22px;
+    font-size: 20px;
     margin-bottom: var(--spacing-lg);
     line-height: 1.6;
 }
@@ -342,7 +295,6 @@ section.active {
     transform: scale(0.98);
 }
 
-/* IFRAME CONTAINER */
 .iframe-container {
     margin: var(--spacing-lg) 0;
 }
@@ -352,13 +304,11 @@ section.active {
     border: 1px solid var(--color-border);
 }
 
-/* PARADAS DEL RECORRIDO FINAL */
 .parada-card {
     border: 2px solid var(--color-border);
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
     position: relative;
-    background: white;
     transition: border-color 0.3s;
 }
 
@@ -450,7 +400,6 @@ section.active {
     color: var(--color-accent);
 }
 
-/* Footer */
 footer {
     margin-top: var(--spacing-xl);
     padding: var(--spacing-lg) 0;
@@ -461,7 +410,48 @@ footer {
     opacity: 0.7;
 }
 
-/* EFECTO DUOTONO PARA IMÁGENES */
+.recursos-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: var(--spacing-lg);
+}
+
+.recursos-list li {
+    margin-bottom: var(--spacing-md);
+    padding-left: var(--spacing-md);
+    position: relative;
+    line-height: 1.7;
+}
+
+.recursos-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+}
+
+.recursos-list a {
+    color: var(--color-accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-accent-light);
+    transition: all 0.3s;
+}
+
+.recursos-list a:hover {
+    border-bottom-color: var(--color-accent);
+    background: rgba(61, 90, 128, 0.05);
+}
+
+.recursos-list em {
+    font-style: italic;
+}
+
+.recursos-list .nota {
+    font-size: 14px;
+    opacity: 0.6;
+    font-style: italic;
+}
+
 .duotone-container {
     position: relative;
     background-color: #3d5a80;
@@ -474,12 +464,10 @@ footer {
     filter: grayscale(100%) contrast(1.1) brightness(1.1);
 }
 
-/* Aplicar duotono a todas las imágenes por defecto */
 img {
     filter: grayscale(100%) contrast(1.1) brightness(1.1);
 }
 
-/* Canvas para el rastro del cursor */
 #cursor-trail-canvas {
     position: fixed;
     top: 0;
@@ -491,7 +479,6 @@ img {
     opacity: 0.4;
 }
 
-/* Cursor personalizado experimental */
 #custom-cursor {
     position: fixed;
     width: 20px;
@@ -508,11 +495,6 @@ img {
         --spacing-md: 24px;
         --spacing-lg: 48px;
         --spacing-xl: 72px;
-    }
-
-    .map-container {
-        width: 100vw;
-        height: 100vh;
     }
 
     #content {

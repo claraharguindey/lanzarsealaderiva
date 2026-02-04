@@ -54,13 +54,13 @@ function drawLineBetweenDots(fromSection, toSection) {
     const x2 = toRect.left - mapRect.left + toRect.width / 2;
     const y2 = toRect.top - mapRect.top + toRect.height / 2;
     
-    // Crear línea SVG
+    // Crear línea SVG con color azul SIN opacidad
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('x1', x1);
     line.setAttribute('y1', y1);
     line.setAttribute('x2', x2);
     line.setAttribute('y2', y2);
-    line.setAttribute('stroke', '#98c1d9');
+    line.setAttribute('stroke', '#3d5a80'); // Color de los puntos
     line.setAttribute('stroke-width', '2');
     line.style.opacity = '0';
     
@@ -69,7 +69,7 @@ function drawLineBetweenDots(fromSection, toSection) {
     // Animar la línea
     setTimeout(() => {
         line.style.transition = 'opacity 0.5s';
-        line.style.opacity = '0.7';
+        line.style.opacity = '1'; // Sin opacidad, completamente opaco
     }, 50);
 }
 

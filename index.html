@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <!-- Canvas para rastro del cursor -->
+    <canvas id="cursor-trail-canvas"></canvas>
+    
     <!-- Cursor custom -->
     <div id="custom-cursor"></div>
 
@@ -15,38 +18,35 @@
         <div class="map-container">
             <div class="info-corner top-left">29/01/2026</div>
             <div class="info-corner top-right">16-20 h</div>
-            <div class="info-corner bottom">
+            <div class="info-corner top-center">
                 <h1>Lanzarse a la deriva</h1>
-                <p>Diseño y gestión de un recorrido urbano</p>
+                <p class="subtitle">Diseño y gestión de un recorrido urbano</p>
             </div>
 
             <!-- Puntos navegables -->
-            <div class="dot" id="dot-about" style="top: 20%; left: 15%;" data-section="about" data-x="15" data-y="20">
-                <span class="dot-label">About</span>
+            <div class="dot" id="dot-about" style="top: 20%; left: 15%;" data-section="about">
+                <span class="dot-label">01 About</span>
             </div>
-            <div class="dot" id="dot-miradas" style="top: 35%; left: 30%;" data-section="miradas" data-x="30" data-y="35">
-                <span class="dot-label">Miradas</span>
+            <div class="dot" id="dot-miradas" style="top: 35%; left: 30%;" data-section="miradas">
+                <span class="dot-label">02 Miradas</span>
             </div>
-            <div class="dot" id="dot-mapa-colectivo" style="top: 50%; left: 50%;" data-section="mapa-colectivo" data-x="50" data-y="50">
-                <span class="dot-label">Mapa colectivo</span>
+            <div class="dot" id="dot-mapa-colectivo" style="top: 50%; left: 50%;" data-section="mapa-colectivo">
+                <span class="dot-label">03 Mapa colectivo</span>
             </div>
-            <div class="dot" id="dot-recorrido-final" style="top: 65%; left: 70%;" data-section="recorrido-final" data-x="70" data-y="65">
-                <span class="dot-label">Recorrido</span>
+            <div class="dot" id="dot-recorrido-final" style="top: 65%; left: 70%;" data-section="recorrido-final">
+                <span class="dot-label">04 Recorrido</span>
             </div>
-            <div class="dot" id="dot-recursos" style="top: 75%; left: 35%;" data-section="recursos" data-x="35" data-y="75">
-                <span class="dot-label">Recursos</span>
+            <div class="dot" id="dot-recursos" style="top: 75%; left: 35%;" data-section="recursos">
+                <span class="dot-label">05 Recursos</span>
             </div>
 
-            <!-- Contenedor para líneas dinámicas -->
             <svg id="lines-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
             </svg>
         </div>
     </div>
 
-    <!-- Botón volver -->
     <div class="back-nav" style="display: none;">← mapa</div>
 
-    <!-- Contenido de secciones -->
     <div id="content">
         <!-- ABOUT -->
         <section id="about">

@@ -23,7 +23,7 @@
     --color-text: #3d5a80;
     --color-accent: #3d5a80;
     --color-accent-light: #98c1d9;
-    --color-border: #d4d3cc;
+    --color-border: #3d5a80;
     --spacing-xs: 8px;
     --spacing-sm: 16px;
     --spacing-md: 32px;
@@ -62,7 +62,6 @@ h3 {
     font-size: 13px;
     font-weight: 500;
     margin-bottom: var(--spacing-sm);
-    margin-top: var(--spacing-lg);
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--color-accent);
@@ -242,7 +241,6 @@ section.active {
 }
 
 .mirada-card {
-    padding: var(--spacing-lg);
     margin-bottom: var(--spacing-md);
 }
 
@@ -305,15 +303,12 @@ section.active {
 }
 
 .parada-card {
-    border: 2px solid var(--color-border);
+    border: 1px solid var(--color-border);
     padding: var(--spacing-lg);
+    background-color: var(--color-background) ;
     margin-bottom: var(--spacing-xl);
     position: relative;
     transition: border-color 0.3s;
-}
-
-.parada-card:hover {
-    border-color: var(--color-accent-light);
 }
 
 .parada-numero {
@@ -370,7 +365,6 @@ section.active {
 }
 
 .parada-preguntas {
-    border-left: 3px solid var(--color-accent-light);
     padding-left: var(--spacing-md);
     background: var(--color-surface);
     padding: var(--spacing-md);

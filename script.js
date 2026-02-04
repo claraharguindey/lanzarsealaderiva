@@ -1,4 +1,3 @@
-
 // Navegación por puntos
 const mapScreen = document.getElementById('map-screen');
 const content = document.getElementById('content');
@@ -61,7 +60,7 @@ function drawLineBetweenDots(fromSection, toSection) {
     line.setAttribute('y1', y1);
     line.setAttribute('x2', x2);
     line.setAttribute('y2', y2);
-    line.setAttribute('stroke', '#5b7ce6');
+    line.setAttribute('stroke', '#98c1d9');
     line.setAttribute('stroke-width', '2');
     line.style.opacity = '0';
     
@@ -70,7 +69,7 @@ function drawLineBetweenDots(fromSection, toSection) {
     // Animar la línea
     setTimeout(() => {
         line.style.transition = 'opacity 0.5s';
-        line.style.opacity = '1';
+        line.style.opacity = '0.7';
     }, 50);
 }
 
@@ -99,14 +98,138 @@ function hideContent() {
     }
 }
 
-// Cursor personalizado
+// GENERADOR DE MIRADAS
+const miradas = [
+    'la jardinera clandestina',
+    'quien ha perdido algo',
+    'la geóloga amateur',
+    'el recolector de sonidos',
+    'la arquitecta invisible',
+    'quien busca sombra',
+    'el cartógrafo de olores',
+    'la arqueóloga del asfalto',
+    'quien cuenta historias a las piedras',
+    'el observador de esquinas',
+    'la coleccionista de silencios',
+    'quien lee las grietas',
+    'el traductor de grafitis',
+    'la cronista de balcones',
+    'quien camina hacia atrás',
+    'el botánico de lo residual',
+    'la rastreadora de reflejos',
+    'quien dibuja mapas con los pies',
+    'el guardián de umbrales',
+    'la intérprete de fachadas',
+    'quien escucha al pavimento',
+    'el cazador de detalles',
+    'la narradora de esquinas',
+    'quien mira solo hacia arriba',
+    'el coleccionista de texturas',
+    'la detective de lo cotidiano',
+    'quien camina sin destino',
+    'el lector de ventanas',
+    'la exploradora de intersticios',
+    'quien busca lo que falta',
+    'el cronista de lo efímero',
+    'la observadora de ritmos',
+    'quien encuentra patrones',
+    'el seguidor de sombras',
+    'la inventora de atajos',
+    'quien pregunta a los muros',
+    'el fotógrafo sin cámara',
+    'la médium urbana',
+    'quien camina en espiral',
+    'el arqueólogo del presente'
+];
+
+const generarBtn = document.getElementById('generar-mirada');
+const miradaOutput = document.getElementById('mirada-output');
+
+if (generarBtn && miradaOutput) {
+    generarBtn.addEventListener('click', function() {
+        const randomMirada = miradas[Math.floor(Math.random() * miradas.length)];
+        
+        // Animación de cambio
+        miradaOutput.style.opacity = '0';
+        miradaOutput.style.transform = 'translateY(-10px)';
+        
+        setTimeout(() => {
+            miradaOutput.textContent = randomMirada;
+            miradaOutput.style.transition = 'opacity 0.3s, transform 0.3s';
+            miradaOutput.style.opacity = '1';
+            miradaOutput.style.transform = 'translateY(0)';
+        }, 150);
+    });
+}
+
+// Cursor personalizado con garabato continuo
 const cursor = document.getElementById('custom-cursor');
 let mouseX = 0, mouseY = 0;
 let cursorX = 0, cursorY = 0;
 
+// Canvas para dibujar el garabato
+const drawCanvas = document.createElement('canvas');
+drawCanvas.id = 'draw-canvas';
+drawCanvas.style.position = 'fixed';
+drawCanvas.style.top = '0';
+drawCanvas.style.left = '0';
+drawCanvas.style.width = '100vw';
+drawCanvas.style.height = '100vh';
+drawCanvas.style.pointerEvents = 'none';
+drawCanvas.style.zIndex = '5';
+drawCanvas.style.opacity = '0.25';
+document.body.appendChild(drawCanvas);
+
+const ctx = drawCanvas.getContext('2d');
+drawCanvas.width = window.innerWidth;
+drawCanvas.height = window.innerHeight;
+
+// Configuración del pincel
+ctx.strokeStyle = '#98c1d9';
+ctx.lineWidth = 1.5;
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+
 document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
+    
+    // Dibujar línea continua
+    if (!isDrawing) {
+        lastX = e.clientX;
+        lastY = e.clientY;
+        isDrawing = true;
+    }
+    
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.clientX, e.clientY);
+    ctx.stroke();
+    
+    lastX = e.clientX;
+    lastY = e.clientY;
+});
+
+// Ajustar canvas al redimensionar
+window.addEventListener('resize', () => {
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCanvas.width = drawCanvas.width;
+    tempCanvas.height = drawCanvas.height;
+    tempCtx.drawImage(drawCanvas, 0, 0);
+    
+    drawCanvas.width = window.innerWidth;
+    drawCanvas.height = window.innerHeight;
+    ctx.drawImage(tempCanvas, 0, 0);
+    
+    ctx.strokeStyle = '#98c1d9';
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
 });
 
 function animateCursor() {
@@ -132,3 +255,13 @@ dots.forEach(dot => {
         cursor.style.transform = 'scale(1)';
     });
 });
+
+// Efecto hover en botón generar
+if (generarBtn) {
+    generarBtn.addEventListener('mouseenter', function() {
+        cursor.style.transform = 'scale(2)';
+    });
+    generarBtn.addEventListener('mouseleave', function() {
+        cursor.style.transform = 'scale(1)';
+    });
+}

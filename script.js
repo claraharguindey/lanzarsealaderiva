@@ -1,4 +1,3 @@
-// Navegación por puntos
 const mapScreen = document.getElementById('map-screen');
 const content = document.getElementById('content');
 const backNav = document.querySelector('.back-nav');
@@ -6,7 +5,6 @@ const dots = document.querySelectorAll('.dot');
 const sections = document.querySelectorAll('section');
 const linesSvg = document.getElementById('lines-svg');
 
-// Array para trackear navegación
 let navigationPath = [];
 let currentSection = null;
 
@@ -14,16 +12,13 @@ dots.forEach(dot => {
     dot.addEventListener('click', function() {
         const sectionId = this.getAttribute('data-section');
         
-        // Si hay una sección previa, dibujar línea
         if (currentSection && currentSection !== sectionId) {
             drawLineBetweenDots(currentSection, sectionId);
         }
         
-        // Actualizar estado
         navigationPath.push(sectionId);
         currentSection = sectionId;
         
-        // Marcar dot como visitado
         document.querySelectorAll('.dot').forEach(d => d.classList.remove('current'));
         this.classList.add('visited', 'current');
         
@@ -41,20 +36,17 @@ function drawLineBetweenDots(fromSection, toSection) {
     
     if (!fromDot || !toDot) return;
     
-    // Obtener posiciones
     const mapContainer = document.querySelector('.map-container');
     const mapRect = mapContainer.getBoundingClientRect();
     
     const fromRect = fromDot.getBoundingClientRect();
     const toRect = toDot.getBoundingClientRect();
     
-    // Calcular posiciones relativas al contenedor
     const x1 = fromRect.left - mapRect.left + fromRect.width / 2;
     const y1 = fromRect.top - mapRect.top + fromRect.height / 2;
     const x2 = toRect.left - mapRect.left + toRect.width / 2;
     const y2 = toRect.top - mapRect.top + toRect.height / 2;
     
-    // Crear línea SVG con color azul SIN opacidad
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('x1', x1);
     line.setAttribute('y1', y1);
@@ -66,7 +58,6 @@ function drawLineBetweenDots(fromSection, toSection) {
     
     linesSvg.appendChild(line);
     
-    // Animar la línea
     setTimeout(() => {
         line.style.transition = 'opacity 0.5s';
         line.style.opacity = '1';
@@ -91,55 +82,25 @@ function hideContent() {
     content.classList.remove('active');
     backNav.style.display = 'none';
     
-    // Mantener el estado de navegación visible
     document.querySelectorAll('.dot').forEach(d => d.classList.remove('current'));
     if (currentSection) {
         document.getElementById(`dot-${currentSection}`).classList.add('current');
     }
 }
 
-// GENERADOR DE MIRADAS
 const miradas = [
-    'la jardinera clandestina',
+    'quien cuida de los jardines',
     'quien ha perdido algo',
-    'la geóloga amateur',
-    'el recolector de sonidos',
-    'la arquitecta invisible',
     'quien busca sombra',
-    'el cartógrafo de olores',
-    'la arqueóloga del asfalto',
     'quien cuenta historias a las piedras',
-    'el observador de esquinas',
-    'la coleccionista de silencios',
     'quien lee las grietas',
-    'el traductor de grafitis',
-    'la cronista de balcones',
+    'quien pinta las calles',
     'quien camina hacia atrás',
-    'el botánico de lo residual',
-    'la rastreadora de reflejos',
-    'quien dibuja mapas con los pies',
-    'el guardián de umbrales',
-    'la intérprete de fachadas',
-    'quien escucha al pavimento',
-    'el cazador de detalles',
-    'la narradora de esquinas',
+    'quien dibuja mapas',
     'quien mira solo hacia arriba',
-    'el coleccionista de texturas',
-    'la detective de lo cotidiano',
     'quien camina sin destino',
-    'el lector de ventanas',
-    'la exploradora de intersticios',
-    'quien busca lo que falta',
-    'el cronista de lo efímero',
-    'la observadora de ritmos',
-    'quien encuentra patrones',
-    'el seguidor de sombras',
+    'quien cotillea',
     'la inventora de atajos',
-    'quien pregunta a los muros',
-    'el fotógrafo sin cámara',
-    'la médium urbana',
-    'quien camina en espiral',
-    'el arqueólogo del presente'
 ];
 
 const generarBtn = document.getElementById('generar-mirada');
@@ -148,8 +109,6 @@ const miradaOutput = document.getElementById('mirada-output');
 if (generarBtn && miradaOutput) {
     generarBtn.addEventListener('click', function() {
         const randomMirada = miradas[Math.floor(Math.random() * miradas.length)];
-        
-        // Animación de cambio
         miradaOutput.style.opacity = '0';
         miradaOutput.style.transform = 'translateY(-10px)';
         
@@ -162,7 +121,6 @@ if (generarBtn && miradaOutput) {
     });
 }
 
-// Canvas para dibujar el garabato
 const drawCanvas = document.createElement('canvas');
 drawCanvas.id = 'draw-canvas';
 drawCanvas.style.position = 'fixed';
@@ -179,7 +137,6 @@ const ctx = drawCanvas.getContext('2d');
 drawCanvas.width = window.innerWidth;
 drawCanvas.height = window.innerHeight;
 
-// Configuración del pincel
 ctx.strokeStyle = '#98c1d9';
 ctx.lineWidth = 1.5;
 ctx.lineCap = 'round';
@@ -190,7 +147,6 @@ let lastX = 0;
 let lastY = 0;
 
 document.addEventListener('mousemove', (e) => {
-    // Dibujar línea continua
     if (!isDrawing) {
         lastX = e.clientX;
         lastY = e.clientY;
@@ -206,7 +162,6 @@ document.addEventListener('mousemove', (e) => {
     lastY = e.clientY;
 });
 
-// Ajustar canvas al redimensionar
 window.addEventListener('resize', () => {
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
@@ -224,7 +179,6 @@ window.addEventListener('resize', () => {
     ctx.lineJoin = 'round';
 });
 
-// PUNTOS DE IMAGEN CON HOVER - VERSION DEBUG
 console.log('Iniciando creación de puntos de imagen...');
 
 const imagePointsData = [
@@ -249,14 +203,12 @@ function createImagePoints() {
     console.log('✅ Contenedor encontrado, creando', imagePointsData.length, 'puntos...');
     
     imagePointsData.forEach((point, index) => {
-        // Crear elemento punto
         const pointEl = document.createElement('div');
         pointEl.className = 'image-point';
         pointEl.style.left = point.x + '%';
         pointEl.style.top = point.y + '%';
         pointEl.innerHTML = '✷';
         
-        // Crear popup con imagen
         const popup = document.createElement('div');
         popup.className = 'image-point-popup';
         
@@ -266,7 +218,6 @@ function createImagePoints() {
         img.alt = `Imagen ${point.imageNumber}`;
         img.loading = 'lazy';
         
-        // Debug de carga de imágenes
         img.onerror = function() {
             console.error(`❌ Error cargando: ${imagePath}`);
         };
@@ -278,7 +229,6 @@ function createImagePoints() {
         popup.appendChild(img);
         pointEl.appendChild(popup);
         
-        // Posicionar popup dinámicamente
         pointEl.addEventListener('mouseenter', function() {
             const rect = pointEl.getBoundingClientRect();
             const popupWidth = 300;
@@ -303,10 +253,8 @@ function createImagePoints() {
     });
 }
 
-// Inicializar puntos al cargar
 console.log('Ejecutando createImagePoints...');
 createImagePoints();
-// ROTAR TEXTO - VERSIÓN AJUSTADA
 function rotateText(selector, maxRotation = 3) {
     const elements = document.querySelectorAll(selector);
     
@@ -322,15 +270,13 @@ function rotateText(selector, maxRotation = 3) {
     });
 }
 
-// Aplicar rotaciones
-rotateText('p', 7);        // Párrafos - rotación moderada
-rotateText('h2', 10);      // H2 - más exagerado
-rotateText('h3', 8);       // H3 - algo exagerado
-rotateText('.subtitle', 5); // Subtítulo - sutil
-rotateText('li', 5);       // Items de listas - sutil
-rotateText('.label', 4);   // Labels - muy sutil
+rotateText('p', 7);        
+rotateText('h2', 10);      
+rotateText('h3', 8);       
+rotateText('.subtitle', 5); 
+rotateText('li', 5);       
+rotateText('.label', 4);  
 
-// Ocultar/mostrar estrellas según el contenido
 function toggleImagePoints() {
     const imagePointsContainer = document.getElementById('image-points-container');
     const contentActive = content.classList.contains('active');
@@ -340,11 +286,10 @@ function toggleImagePoints() {
         imagePointsContainer.style.pointerEvents = 'none';
     } else {
         imagePointsContainer.style.opacity = '1';
-        imagePointsContainer.style.pointerEvents = 'none'; // Mantener none para que no bloqueen clicks
+        imagePointsContainer.style.pointerEvents = 'none'; 
     }
 }
 
-// Actualizar las funciones existentes
 const originalShowSection = showSection;
 showSection = function(sectionId) {
     originalShowSection(sectionId);
@@ -357,7 +302,6 @@ hideContent = function() {
     toggleImagePoints();
 };
 
-// ========== FASE DE DERIVA INICIAL ==========
 const driftFragments = [
     "mirar la ciudad es siempre un ejercicio político",
     "cada cuerpo porta sus propios deseos",
@@ -386,18 +330,25 @@ let lastMouseX = 0;
 let lastMouseY = 0;
 
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 const REQUIRED_FRAGMENTS = 15;
-const REVEAL_DISTANCE = 150; // píxeles de movimiento necesarios
+const REVEAL_DISTANCE = 150;
 
-// Iniciar según dispositivo
+let lastAcceleration = { x: 0, y: 0, z: 0 };
+let stepDetected = false;
+const STEP_THRESHOLD = 15;
+const STEP_COOLDOWN = 400;
+const STEPS_PER_FRAGMENT = 5;
+let stepCounter = 0;
+
 if (isMobile) {
     initMobileDrift();
 } else {
     initDesktopDrift();
 }
 
-// DESKTOP: Revelar con movimiento del mouse
 function initDesktopDrift() {
+    showInstruction('Mueve el ratón para revelar los fragmentos');
     document.addEventListener('mousemove', handleMouseDrift);
 }
 
@@ -414,70 +365,196 @@ function handleMouseDrift(e) {
     lastMouseY = e.clientY;
     
     if (distanceTraveled > REVEAL_DISTANCE) {
-        revealFragment(e.clientX, e.clientY);
+        revealFragmentRandom();
         distanceTraveled = 0;
     }
 }
 
-// MÓVIL: Revelar con podómetro/touch
 function initMobileDrift() {
-    // Intentar usar acelerómetro
-    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-        // iOS 13+ requiere permiso
-        DeviceMotionEvent.requestPermission()
-            .then(response => {
-                if (response === 'granted') {
-                    startAccelerometer();
-                } else {
-                    useTouchFallback();
-                }
-            })
-            .catch(() => useTouchFallback());
-    } else if (window.DeviceMotionEvent) {
-        startAccelerometer();
-    } else {
-        useTouchFallback();
+    console.log('📱 Iniciando modo móvil...');
+    console.log('🔍 iOS detectado:', isIOS);
+    
+    if (typeof DeviceMotionEvent !== 'undefined' && 
+        typeof DeviceMotionEvent.requestPermission === 'function') {
+        
+        console.log('🔐 iOS 13+ - Requiere permisos');
+        showPermissionButton();
+        
+    } 
+    else if (window.DeviceMotionEvent) {
+        console.log('✅ Acelerómetro disponible - Iniciando directo');
+        startPedometer();
+    } 
+    else {
+        console.log('⚠️ Sin acelerómetro - Usando fallback');
+        useTapFallback();
     }
 }
 
-function startAccelerometer() {
-    let lastTime = Date.now();
-    let stepCount = 0;
+function showPermissionButton() {
+    const permButton = document.createElement('button');
+    permButton.innerHTML = `
+        <div style="font-size: 16px; margin-bottom: 8px;">Para revelar los fragmentos</div>
+        <div style="font-size: 20px; font-weight: bold;">Activar podómetro 🚶‍♀️</div>
+    `;
+    permButton.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 30px 50px;
+        background: linear-gradient(135deg, #ee6c4d 0%, #d95d3f 100%);
+        color: white;
+        border: none;
+        border-radius: 40px;
+        font-family: inherit;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: 0 8px 30px rgba(238, 108, 77, 0.4);
+        text-align: center;
+        line-height: 1.4;
+    `;
     
-    window.addEventListener('devicemotion', (e) => {
+    permButton.addEventListener('click', requestMotionPermission);
+    
+    driftScreen.appendChild(permButton);
+}
+
+async function requestMotionPermission() {
+    try {
+        const response = await DeviceMotionEvent.requestPermission();
+        
+        if (response === 'granted') {
+            console.log('✅ Permisos concedidos');
+            document.querySelector('button')?.remove();
+            startPedometer();
+        } else {
+            console.log('❌ Permisos denegados');
+            showPermissionDenied();
+        }
+    } catch (error) {
+        console.error('Error solicitando permisos:', error);
+        useTapFallback();
+    }
+}
+
+function showPermissionDenied() {
+    const message = document.createElement('div');
+    message.innerHTML = `
+        <div style="margin-bottom: 15px;">No se pueden detectar tus pasos</div>
+        <div style="font-size: 14px; opacity: 0.8;">Toca la pantalla para continuar</div>
+    `;
+    message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 30px;
+        background: rgba(61, 90, 128, 0.95);
+        color: white;
+        border-radius: 20px;
+        font-family: inherit;
+        z-index: 1000;
+        text-align: center;
+        max-width: 80%;
+    `;
+    
+    document.querySelector('button')?.remove();
+    driftScreen.appendChild(message);
+    
+    setTimeout(() => {
+        message.remove();
+        useTapFallback();
+    }, 3000);
+}
+
+function startPedometer() {
+    console.log('🚶 Podómetro iniciado');
+    
+    window.addEventListener('devicemotion', handleMotion);
+    showInstruction('Camina para revelar los fragmentos');
+}
+
+function handleMotion(event) {
+    if (revealedCount >= REQUIRED_FRAGMENTS) return;
+    
+    const acc = event.accelerationIncludingGravity;
+    
+    if (!acc || acc.x === null) {
+        console.log('⚠️ Sin datos de acelerómetro');
+        return;
+    }
+    
+    const deltaX = Math.abs(acc.x - lastAcceleration.x);
+    const deltaY = Math.abs(acc.y - lastAcceleration.y);
+    const deltaZ = Math.abs(acc.z - lastAcceleration.z);
+    const totalDelta = deltaX + deltaY + deltaZ;
+    
+    if (totalDelta > STEP_THRESHOLD && !stepDetected) {
+        stepDetected = true;
+        stepCounter++;
+        
+        console.log(`👟 Paso ${stepCounter} (delta: ${totalDelta.toFixed(2)})`);
+        
+        if (stepCounter % STEPS_PER_FRAGMENT === 0) {
+            revealFragmentRandom();
+            vibrate();
+        }
+        
+        setTimeout(() => {
+            stepDetected = false;
+        }, STEP_COOLDOWN);
+    }
+    
+    lastAcceleration = { x: acc.x, y: acc.y, z: acc.z };
+}
+
+function useTapFallback() {
+    console.log('👆 Modo táctil activado');
+    showInstruction('Toca la pantalla para revelar fragmentos');
+    
+    let tapCount = 0;
+    
+    document.addEventListener('touchstart', (e) => {
         if (revealedCount >= REQUIRED_FRAGMENTS) return;
         
-        const acc = e.accelerationIncludingGravity;
-        const movement = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
+        tapCount++;
         
-        const currentTime = Date.now();
-        
-        // Detectar "paso" (pico de movimiento)
-        if (movement > 20 && currentTime - lastTime > 300) {
-            stepCount++;
-            
-            if (stepCount % 3 === 0) { // Cada 3 pasos
-                revealFragmentRandom();
-            }
-            
-            lastTime = currentTime;
+        if (tapCount % 3 === 0) {
+            const touch = e.touches[0];
+            revealFragment(touch.clientX, touch.clientY);
+            vibrate();
         }
     });
 }
 
-function useTouchFallback() {
-    let touchCount = 0;
+function showInstruction(text) {
+    const instruction = document.createElement('div');
+    instruction.textContent = text;
+    instruction.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(61, 90, 128, 0.9);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 14px;
+        z-index: 999;
+        text-align: center;
+        max-width: 80%;
+        animation: fadeInOut 4s ease-in-out;
+    `;
     
-    document.addEventListener('touchmove', (e) => {
-        if (revealedCount >= REQUIRED_FRAGMENTS) return;
-        
-        touchCount++;
-        
-        if (touchCount % 30 === 0) { // Cada 30 movimientos de touch
-            const touch = e.touches[0];
-            revealFragment(touch.clientX, touch.clientY);
-        }
-    });
+    driftScreen.appendChild(instruction);
+    setTimeout(() => instruction.remove(), 4000);
+}
+
+function vibrate() {
+    if ('vibrate' in navigator) {
+        navigator.vibrate(50);
+    }
 }
 
 function revealFragment(x, y) {
@@ -487,7 +564,6 @@ function revealFragment(x, y) {
     fragment.className = 'drift-fragment';
     fragment.textContent = driftFragments[revealedCount];
     
-    // Posición con margen desde bordes
     const safeX = Math.max(20, Math.min(x, window.innerWidth - 320));
     const safeY = Math.max(20, Math.min(y, window.innerHeight - 100));
     
@@ -501,6 +577,8 @@ function revealFragment(x, y) {
     revealedCount++;
     revealedCountDisplay.textContent = revealedCount;
     
+    console.log(`✨ Fragmento ${revealedCount}/${REQUIRED_FRAGMENTS}`);
+    
     if (revealedCount >= REQUIRED_FRAGMENTS) {
         completeDrift();
     }
@@ -513,16 +591,15 @@ function revealFragmentRandom() {
 }
 
 function completeDrift() {
+    console.log('🎉 Deriva completada');
+    
     setTimeout(() => {
         driftScreen.classList.add('completed');
+        window.removeEventListener('devicemotion', handleMotion);
         document.removeEventListener('mousemove', handleMouseDrift);
         
-        // Iniciar web normal después de la transición
         setTimeout(() => {
             driftScreen.style.display = 'none';
         }, 800);
     }, 1000);
 }
-
-// ========== TU CÓDIGO ACTUAL CONTINÚA AQUÍ ==========
-// Navegación por puntos...

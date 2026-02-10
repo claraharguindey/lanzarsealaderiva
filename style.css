@@ -33,7 +33,7 @@
 
 body {
     font-family: 'Ronzino', serif;
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1.7;
     background: var(--color-background);
     color: var(--color-text);
@@ -50,7 +50,7 @@ h1 {
 }
 
 h2 {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 500;
     margin-bottom: var(--spacing-md);
     text-transform: uppercase;
@@ -59,7 +59,7 @@ h2 {
 }
 
 h3 {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     margin-bottom: var(--spacing-sm);
     text-transform: uppercase;
@@ -73,6 +73,62 @@ h3 {
 
 .text-block p {
     margin-bottom: var(--spacing-md);
+}
+
+#drift-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--color-background);
+    z-index: 10000;
+    transition: opacity 0.8s ease;
+}
+
+#drift-screen.completed {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#drift-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.drift-fragment {
+    position: absolute;
+    font-size: 16px;
+    line-height: 1.6;
+    opacity: 0;
+    pointer-events: none;
+    max-width: 300px;
+    color: var(--color-text);
+    transition: opacity 0.6s ease;
+}
+
+.drift-fragment.visible {
+    opacity: 1;
+}
+
+#drift-counter {
+    position: fixed;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    font-size: 14px;
+    opacity: 0.6;
+    letter-spacing: 1px;
+}
+
+#drift-instructions {
+    position: fixed;
+    bottom: var(--spacing-md);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    opacity: 0.5;
+    text-align: center;
 }
 
 #map-screen {
@@ -103,7 +159,7 @@ h3 {
 
 .info-corner {
     position: absolute;
-    font-size: 14px;
+    font-size: 16px;
     letter-spacing: 0.5px;
     z-index: 20;
     color: var(--color-text);
@@ -132,7 +188,7 @@ h3 {
 }
 
 .info-corner.top-center .subtitle {
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .dot {
@@ -156,7 +212,7 @@ h3 {
     top: -20px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 8px;
+    font-size: 10px;
     white-space: nowrap;
     opacity: 0;
     transition: opacity 0.3s;
@@ -194,10 +250,7 @@ h3 {
     position: fixed;
     top: var(--spacing-md);
     left: var(--spacing-md);
-    font-size: 13px;
-    border: 1px solid var(--color-border);
-    padding: 12px 24px;
-    background: var(--color-background);
+    font-size: 16px;
     cursor: pointer;
     z-index: 100;
     transition: all 0.3s;
@@ -256,7 +309,7 @@ section.active {
 }
 
 .pregunta-generador {
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: var(--spacing-lg);
     line-height: 1.6;
 }
@@ -272,7 +325,7 @@ section.active {
 }
 
 .btn-generar {
-    font-size: 13px;
+    font-size: 16px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     border: 1px solid var(--color-accent);
@@ -305,7 +358,7 @@ section.active {
 .parada-card {
     border: 1px solid var(--color-border);
     padding: var(--spacing-lg);
-    background-color: var(--color-background) ;
+    background-color: var(--color-background);
     margin-bottom: var(--spacing-xl);
     position: relative;
     transition: border-color 0.3s;
@@ -317,7 +370,7 @@ section.active {
     left: var(--spacing-md);
     background: var(--color-background);
     padding: 6px 16px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 2px;
     color: var(--color-accent);
@@ -326,7 +379,7 @@ section.active {
 .parada-card h2 {
     margin-top: var(--spacing-sm);
     margin-bottom: var(--spacing-md);
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .parada-info {
@@ -348,7 +401,7 @@ section.active {
 
 .label {
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 14px;
     letter-spacing: 1px;
     min-width: 120px;
     color: var(--color-accent);
@@ -356,7 +409,7 @@ section.active {
 }
 
 .value {
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .parada-descripcion {
@@ -399,7 +452,7 @@ footer {
     padding: var(--spacing-lg) 0;
     text-align: center;
     border-top: 1px solid var(--color-border);
-    font-size: 14px;
+    font-size: 16px;
     color: var(--color-text);
     opacity: 0.7;
 }
@@ -473,17 +526,6 @@ img {
     opacity: 0.4;
 }
 
-#custom-cursor {
-    position: fixed;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.15s;
-    display: none;
-}
-
 @media (max-width: 768px) {
     :root {
         --spacing-md: 24px;
@@ -514,5 +556,13 @@ img {
 
     h1 {
         font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+
+    .desktop-instruction {
+        display: none !important;
+    }
+    
+    .mobile-instruction {
+        display: block !important;
     }
 }

@@ -1,290 +1,558 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>lanzarse a la deriva</title>
-    <link rel="stylesheet" href="./style.css">
-</head>
-<body>
-    <!-- Canvas para rastro del cursor -->
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="drift-screen">
+      <div id="drift-container"></div>
+      <div id="drift-counter"><span id="revealed-count">0</span> / 15</div>
+      <div id="drift-instructions">
+        <span class="desktop-instruction"
+          >mueve el cursor para revelar los fragmentos</span
+        >
+        <span class="mobile-instruction" style="display: none"
+          >camina para revelar los fragmentos</span
+        >
+      </div>
+    </div>
     <canvas id="cursor-trail-canvas"></canvas>
-    <!-- Pantalla mapa inicial -->
     <div id="map-screen">
-        <div class="map-container">
-            <div class="info-corner top-left"><a href="http://laliminal.com" target="_blank" rel="noopener noreferrer"></a> La Liminal</div>
-            <div class="info-corner top-right"><a href="http://tandem.quintadelsordo.com" target="_blank" rel="noopener noreferrer"></a> TANDEM</div>
-            <div class="info-corner top-center">
-                <h1>Lanzarse a la deriva</h1>
-                <p class="subtitle">Diseño y gestión de un recorrido urbano</p>
-            </div>
-
-            <!-- Puntos navegables -->
-            <div class="dot" id="dot-about" style="top: 20%; left: 15%;" data-section="about">
-                <span class="dot-label">01 About</span>
-            </div>
-            <div class="dot" id="dot-miradas" style="top: 35%; left: 30%;" data-section="miradas">
-                <span class="dot-label">02 Miradas</span>
-            </div>
-            <div class="dot" id="dot-mapa-colectivo" style="top: 50%; left: 50%;" data-section="mapa-colectivo">
-                <span class="dot-label">03 Mapa colectivo</span>
-            </div>
-            <div class="dot" id="dot-recorrido-final" style="top: 65%; left: 70%;" data-section="recorrido-final">
-                <span class="dot-label">04 Recorrido</span>
-            </div>
-            <div class="dot" id="dot-recursos" style="top: 75%; left: 35%;" data-section="recursos">
-                <span class="dot-label">05 Recursos</span>
-            </div>
-
-            <svg id="lines-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
-            </svg>
+      <div class="map-container">
+        <div class="info-corner top-left">
+          <a
+            href="http://laliminal.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          ></a>
+          La Liminal
         </div>
+        <div class="info-corner top-right">
+          <a
+            href="http://tandem.quintadelsordo.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          ></a>
+          TANDEM
+        </div>
+        <div class="info-corner top-center">
+          <h1>Lanzarse a la deriva</h1>
+          <p class="subtitle liquid-text">
+            Diseño y gestión de un recorrido urbano
+          </p>
+        </div>
+
+        <div
+          class="dot"
+          id="dot-about"
+          style="top: 20%; left: 15%"
+          data-section="about"
+        >
+          <span class="dot-label">01 About</span>
+        </div>
+        <div
+          class="dot"
+          id="dot-miradas"
+          style="top: 35%; left: 30%"
+          data-section="miradas"
+        >
+          <span class="dot-label">02 Miradas</span>
+        </div>
+        <div
+          class="dot"
+          id="dot-mapa-colectivo"
+          style="top: 50%; left: 50%"
+          data-section="mapa-colectivo"
+        >
+          <span class="dot-label">03 Mapa colectivo</span>
+        </div>
+        <div
+          class="dot"
+          id="dot-recorrido-final"
+          style="top: 65%; left: 70%"
+          data-section="recorrido-final"
+        >
+          <span class="dot-label">04 Recorrido</span>
+        </div>
+        <div
+          class="dot"
+          id="dot-recursos"
+          style="top: 75%; left: 35%"
+          data-section="recursos"
+        >
+          <span class="dot-label">05 Recursos</span>
+        </div>
+
+        <svg
+          id="lines-svg"
+          style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+          "
+        ></svg>
+      </div>
     </div>
 
-    <div class="back-nav" style="display: none;">← mapa</div>
+    <div class="back-nav" style="display: none">← mapa</div>
 
     <div id="content">
-        <!-- ABOUT -->
-        <section id="about">
-            <h1>about</h1>
-            <div class="text-block">
-                <p>Diseñar una ruta urbana supone realizar un ejercicio de escucha de la ciudad que atiende tanto a las huellas que han ido componiendo el paisaje como a las formas de vida que la conforman, que va de lo visible a lo invisible.</p>
-                <p>Caminar es una forma de pensar la ciudad en la que el cuerpo, el movimiento y el espacio se cruzan, es una manera de hablar con nuestro entorno, de hacerle preguntas y de escribir nuevas historias, practicando otras formas de hacer hablar al paisaje cotidiano.</p>
+      <!-- ABOUT -->
+      <section id="about">
+        <h1>01 About</h1>
+        <div class="text-block">
+          <p>
+            Diseñar una ruta urbana supone realizar un ejercicio de escucha de
+            la ciudad que atiende tanto a las huellas que han ido componiendo el
+            paisaje como a las formas de vida que la conforman, que va de lo
+            visible a lo invisible.
+          </p>
+          <p>
+            Caminar es una forma de pensar la ciudad en la que el cuerpo, el
+            movimiento y el espacio se cruzan, es una manera de hablar con
+            nuestro entorno, de hacerle preguntas y de escribir nuevas
+            historias, practicando otras formas de hacer hablar al paisaje
+            cotidiano.
+          </p>
+        </div>
+
+        <h2 style="margin-top: 60px">el taller</h2>
+        <div class="text-block">
+          <p>
+            Este taller forma parte de TANDEM, un programa formativo que explora
+            metodologías de mediación cultural a través del diseño y gestión de
+            recorridos urbanos.
+          </p>
+          <p>
+            La sesión tuvo lugar el 29 de enero de 2026, de 16:00 a 20:00h, en
+            colaboración con La Liminal, colectivo de mediación cultural que
+            investiga sobre la ciudad y utiliza el recorrido urbano como
+            herramienta central.
+          </p>
+        </div>
+      </section>
+
+      <!-- MIRADAS -->
+      <section id="miradas">
+        <h1>miradas</h1>
+
+        <div class="text-block">
+          <p>
+            Mirar la ciudad es siempre un ejercicio político. No hay forma
+            neutral de atravesar el espacio: cada cuerpo porta sus propios
+            deseos, sus propias limitaciones, su propio tiempo. Las derivas
+            situacionistas nos enseñaron que caminar puede ser una herramienta
+            para desautomatizar la percepción, para descubrir aquellas
+            geografías afectivas que las lógicas del urbanismo funcionalista
+            intentan borrar.
+          </p>
+          <p>
+            En este taller exploramos la ciudad desde posiciones prestadas:
+            encarnamos temporalmente otras formas de estar, otros ritmos, otras
+            necesidades. Al adoptar estas miradas aprendimos que el espacio
+            urbano no es un contenedor vacío sino un campo de fuerzas, un
+            territorio marcado por exclusiones, deseos y conflictos. Mirar con
+            otros ojos es también una forma de imaginar otras ciudades posibles.
+          </p>
+        </div>
+
+        <h2 style="margin-top: 60px">las cuatro miradas del taller</h2>
+
+        <div class="mirada-card">
+          <h3>la mirada niñe</h3>
+          <div class="text-block">
+            <p>
+              El mundo visto desde abajo revela una ciudad diseñada para otros
+              cuerpos. El juego, esa forma primaria de habitar y comprender el
+              espacio, se encuentra constreñido a los límites del parque
+              infantil, como si la ciudad entera no pudiera ser territorio de
+              exploración. Esta mirada detecta las alturas inalcanzables, los
+              muros que invitan a trepar, las grietas que son cuevas, los bancos
+              que son naves. Descubre también la violencia de un urbanismo que
+              confina la infancia a espacios delimitados mientras el resto de la
+              ciudad permanece hostil, diseñada exclusivamente para la escala y
+              el ritmo adulto.
+            </p>
+          </div>
+        </div>
+
+        <div class="mirada-card">
+          <h3>la mirada vecina</h3>
+          <div class="text-block">
+            <p>
+              Quien habita el barrio lee en sus calles la historia de los
+              desplazamientos y las ausencias. Esta mirada detecta las fuentes
+              clausuradas en el barrio de las aguas, los locales que ya no
+              existen, las placas que recuerdan lo que fue. Ve también las
+              contradicciones: el Arzobispado como gran propietario de inmuebles
+              en La Latina, la tensión entre turistización y derecho a la
+              vivienda, el barrio que se infla de rentas altas mientras se
+              desinfla de vecinas de toda la vida. Es una mirada que conoce los
+              nombres, que sabe dónde estaba la tienda de antes, que nota cada
+              cambio como una herida o una pérdida. Que lee las carencias y
+              entiende que la ciudad no se sostiene sola, que necesita ser
+              cuidada.
+            </p>
+          </div>
+        </div>
+
+        <div class="mirada-card">
+          <h3>la mirada turista</h3>
+          <div class="text-block">
+            <p>
+              Busca lo pintoresco, lo típico, la postal. Camina por calles
+              estrechas buscando "autenticidad", ese concepto escurridizo que
+              suele traducirse en una estética determinada de lo popular. Esta
+              mirada entra en otro ritmo, más lento o más frenético, siempre
+              ajeno al tiempo cotidiano del barrio. Se mira a sí misma siendo
+              mirada: hace fotos, consume imágenes, transforma la ciudad en
+              símbolo. Paradójicamente, al buscar lo auténtico contribuye a su
+              desaparición: aquello que se convierte en atracción turística deja
+              de pertenecer a quien lo habita. La ciudad se torna escenografía,
+              algo que contemplar y atravesar sin arraigo.
+            </p>
+          </div>
+        </div>
+
+        <div class="mirada-card">
+          <h3>la mirada anciana</h3>
+          <div class="text-block">
+            <p>
+              Detecta inmediatamente la ausencia de bancos, de lugares donde
+              detenerse y descansar. Busca calles amables: anchas, con sombra,
+              sin demasiada pendiente, evita el bullicio y la prisa. Esta
+              mirada lee las arquitecturas y su transformación en el tiempo:
+              recuerda edificios que ya no están, cambios en las fachadas,
+              comercios que desaparecieron. Entiende la ciudad como un
+              palimpsesto donde conviven varias épocas. También detecta con
+              claridad la violencia de un diseño urbano que no contempla el
+              cansancio, la necesidad de pausa, los cuerpos que no pueden
+              sostener el ritmo productivo de la metrópolis contemporánea.
+            </p>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 80px">generador de miradas</h2>
+
+        <div class="generador-container">
+          <div class="pregunta-generador">
+            imagina orientaciones a través de la mirada de
+            <span id="mirada-output">_____</span>
+          </div>
+          <button id="generar-mirada" class="btn-generar">
+            generar mirada →
+          </button>
+        </div>
+      </section>
+
+      <!-- MAPA COLECTIVO -->
+      <section id="mapa-colectivo">
+        <h1>mapa colectivo</h1>
+
+        <div class="text-block">
+          <p>
+            Después del ejercicio de las miradas, cada grupo señaló lugares
+            significativos en un mapa colaborativo de Google MyMaps. Estos
+            puntos representan los espacios que cada perspectiva consideró
+            relevantes en La Latina.
+          </p>
+        </div>
+
+        <div class="iframe-container">
+          <iframe
+            src="https://www.google.com/maps/d/u/1/embed?mid=1wisP7NMQZMlOxf-J8KXkJxPBnFeEIaw&ehbc=2E312F&noprof=1"
+            width="100%"
+            height="600"
+            style="border: 0"
+          ></iframe>
+        </div>
+      </section>
+
+      <!-- RECORRIDO FINAL -->
+      <section id="recorrido-final">
+        <h1>recorrido final</h1>
+
+        <div class="text-block">
+          <p>
+            A partir de los recorridos colectivos, cada participante seleccionó
+            una parada específica para desarrollar en profundidad. Estas cuatro
+            paradas conforman el recorrido final del taller.
+          </p>
+        </div>
+
+        <!-- Parada 1 -->
+        <div class="parada-card">
+          <div class="parada-numero">01</div>
+          <h2>[ título parada 1 ]</h2>
+
+          <div class="parada-info">
+            <div class="info-item">
+              <span class="label">coordenadas:</span>
+              <span class="value">[ lat, lng ]</span>
             </div>
+          </div>
 
-            <h2 style="margin-top: 60px;">el taller</h2>
-            <div class="text-block">
-                <p>Este taller forma parte de TANDEM, un programa formativo que explora metodologías de mediación cultural a través del diseño y gestión de recorridos urbanos.</p>
-                <p>La sesión tuvo lugar el 29 de enero de 2026, de 16:00 a 20:00h, en colaboración con La Liminal, colectivo de mediación cultural que investiga sobre la ciudad y utiliza el recorrido urbano como herramienta central.</p>
-            </div>
-        </section>
+          <div class="parada-descripcion">
+            <p>[ descripción de la parada ]</p>
+          </div>
 
-        <!-- MIRADAS -->
-        <section id="miradas">
-            <h1>miradas</h1>
-            
-            <div class="text-block">
-                <p>En la primera parte del taller nos dividimos en grupos para recorrer el barrio de La Latina desde diferentes perspectivas. Cada grupo adoptó una mirada específica para observar y registrar el espacio urbano.</p>
-            </div>
-
-            <h2 style="margin-top: 60px;">las cuatro miradas del taller</h2>
-
-            <div class="mirada-card">
-                <h3>la mirada turista</h3>
-                <div class="placeholder">
-                    [ observaciones / conclusiones del grupo ]
-                </div>
-            </div>
-
-            <div class="mirada-card">
-                <h3>la mirada anciana</h3>
-                <div class="placeholder">
-                    [ observaciones / conclusiones del grupo ]
-                </div>
-            </div>
-
-            <div class="mirada-card">
-                <h3>la mirada niñe</h3>
-                <div class="placeholder">
-                    [ observaciones / conclusiones del grupo ]
-                </div>
-            </div>
-
-            <div class="mirada-card">
-                <h3>la mirada vecin</h3>
-                <div class="placeholder">
-                    [ observaciones / conclusiones del grupo ]
-                </div>
-            </div>
-
-            <h2 style="margin-top: 80px;">generador de miradas</h2>
-            
-            <div class="generador-container">
-                <div class="pregunta-generador">
-                    ¿cómo mira la ciudad <span id="mirada-output">_____</span>?
-                </div>
-                <button id="generar-mirada" class="btn-generar">generar mirada →</button>
-            </div>
-        </section>
-
-        <!-- MAPA COLECTIVO -->
-        <section id="mapa-colectivo">
-            <h1>mapa colectivo</h1>
-            
-            <div class="text-block">
-                <p>Después del ejercicio de las miradas, cada grupo señaló lugares significativos en un mapa colaborativo de Google MyMaps. Estos puntos representan los espacios que cada perspectiva consideró relevantes en La Latina.</p>
-            </div>
-
-            <div class="iframe-container">
-                <iframe src="https://www.google.com/maps/d/u/1/embed?mid=1wisP7NMQZMlOxf-J8KXkJxPBnFeEIaw&ehbc=2E312F&noprof=1" width="100%" height="600" style="border:0;"></iframe>
-            </div>
-        </section>
-
-        <!-- RECORRIDO FINAL -->
-        <section id="recorrido-final">
-            <h1>recorrido final</h1>
-            
-            <div class="text-block">
-                <p>A partir de los recorridos colectivos, cada participante seleccionó una parada específica para desarrollar en profundidad. Estas cuatro paradas conforman el recorrido final del taller.</p>
-            </div>
-
-            <!-- Parada 1 -->
-            <div class="parada-card">
-                <div class="parada-numero">01</div>
-                <h2>[ título parada 1 ]</h2>
-                
-                <div class="parada-info">
-                    <div class="info-item">
-                        <span class="label">coordenadas:</span>
-                        <span class="value">[ lat, lng ]</span>
-                    </div>
-                </div>
-
-                <div class="parada-descripcion">
-                    <p>[ descripción de la parada ]</p>
-                </div>
-
-                <div class="parada-preguntas">
-                    <h3>preguntas orientadoras:</h3>
-                    <ul>
-                        <li>[ pregunta 1 ]</li>
-                        <li>[ pregunta 2 ]</li>
-                        <li>[ pregunta 3 ]</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Parada 2 -->
-            <div class="parada-card">
-                <div class="parada-numero">02</div>
-                <h2>[ título parada 2 ]</h2>
-                
-                <div class="parada-info">
-                    <div class="info-item">
-                        <span class="label">coordenadas:</span>
-                        <span class="value">[ lat, lng ]</span>
-                    </div>
-                </div>
-
-                <div class="parada-descripcion">
-                    <p>[ descripción de la parada ]</p>
-                </div>
-
-                <div class="parada-preguntas">
-                    <h3>preguntas orientadoras:</h3>
-                    <ul>
-                        <li>[ pregunta 1 ]</li>
-                        <li>[ pregunta 2 ]</li>
-                        <li>[ pregunta 3 ]</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Parada 3 -->
-            <div class="parada-card">
-                <div class="parada-numero">03</div>
-                <h2>[ título parada 3 ]</h2>
-                
-                <div class="parada-info">
-                    <div class="info-item">
-                        <span class="label">coordenadas:</span>
-                        <span class="value">[ lat, lng ]</span>
-                    </div>
-                </div>
-
-                <div class="parada-descripcion">
-                    <p>[ descripción de la parada ]</p>
-                </div>
-
-                <div class="parada-preguntas">
-                    <h3>preguntas orientadoras:</h3>
-                    <ul>
-                        <li>[ pregunta 1 ]</li>
-                        <li>[ pregunta 2 ]</li>
-                        <li>[ pregunta 3 ]</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Parada 4 -->
-            <div class="parada-card">
-                <div class="parada-numero">04</div>
-                <h2>[ título parada 4 ]</h2>
-                
-                <div class="parada-info">
-                    <div class="info-item">
-                        <span class="label">coordenadas:</span>
-                        <span class="value">[ lat, lng ]</span>
-                    </div>
-                </div>
-
-                <div class="parada-descripcion">
-                    <p>[ descripción de la parada ]</p>
-                </div>
-
-                <div class="parada-preguntas">
-                    <h3>preguntas orientadoras:</h3>
-                    <ul>
-                        <li>[ pregunta 1 ]</li>
-                        <li>[ pregunta 2 ]</li>
-                        <li>[ pregunta 3 ]</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- RECURSOS -->
-        <section id="recursos">
-            <h1>recursos</h1>
-            
-            <div class="text-block">
-                <p>Referencias, proyectos similares y herramientas utilizadas durante el taller.</p>
-            </div>
-
-            <h3>bibliografía de referencia</h3>
-            <ul class="recursos-list">
-                <li>CARERI, F. (2014). <em>Walkscapes. El andar como práctica estética</em>, Barcelona: Editorial Gustavo Gil</li>
-                <li>COLECTIVA XXK. (2020). <em>Derivas. Apuntes metodológicos para organizar una deriva</em>, Bilbao: autoeditado. Disponible en <a href="https://colectivaxxk.net/wp-content/uploads/2020/01/Apuntes-metodolo%CC%81gicos-para-organizar-una-deriva.pdf" target="_blank">colectivaxxk.net</a></li>
-                <li>ICONOCLASISTAS (2013). <em>Manual de mapeo colectivo. Recursos cartográficos críticos para procesos territoriales de creación colectiva</em>, Buenos Aires: Tinta Lim.n. Disponible en <a href="https://iconoclasistas.net/4322-2/" target="_blank">iconoclasistas.net</a></li>
-                <li>JACOBS, J. (2011). <em>Muerte y vida en las grandes ciudades</em>. Madrid: Capitán Swing Libros.</li>
-                <li>JIMÉNEZ, S. (2017). <em>Cómo se hace un paseo de Jane</em>. Madrid: Continta me tienes, 2017.</li>
-                <li>La aventura de aprender. <em>Cómo hacer un paseo de Jane</em> - <a href="https://laaventuradeaprender.intef.es/proyectos_colab/como-hacer-un-paseo-jane/" target="_blank">laaventuradeaprender.intef.es</a></li>
-                <li>La liminal. <em>La tierra bajo mis pies</em> - <a href="https://redplanea.org/recursos/la-tierra-bajo-mis-pies/" target="_blank">redplanea.org</a></li>
-                <li>SOLNIT, R. (2015). <em>Wanderlust. Una historia del caminar</em>. Madrid: Capitán Swing Libros.</li>
+          <div class="parada-preguntas">
+            <h3>preguntas orientadoras:</h3>
+            <ul>
+              <li>[ pregunta 1 ]</li>
+              <li>[ pregunta 2 ]</li>
+              <li>[ pregunta 3 ]</li>
             </ul>
+          </div>
+        </div>
 
-            <h3>recursos audiovisuales</h3>
-            <ul class="recursos-list">
-                <li>Citizen Jane. Battle for the city - <a href="https://www.youtube.com/watch?v=jL5UcpiCl5M" target="_blank">YouTube</a> <span class="nota">(no sabemos si es legal compartir esto)</span></li>
+        <!-- Parada 2 -->
+        <div class="parada-card">
+          <div class="parada-numero">02</div>
+          <h2>[ título parada 2 ]</h2>
+
+          <div class="parada-info">
+            <div class="info-item">
+              <span class="label">coordenadas:</span>
+              <span class="value">[ lat, lng ]</span>
+            </div>
+          </div>
+
+          <div class="parada-descripcion">
+            <p>[ descripción de la parada ]</p>
+          </div>
+
+          <div class="parada-preguntas">
+            <h3>preguntas orientadoras:</h3>
+            <ul>
+              <li>[ pregunta 1 ]</li>
+              <li>[ pregunta 2 ]</li>
+              <li>[ pregunta 3 ]</li>
             </ul>
+          </div>
+        </div>
 
-            <h3>recursos para el registro de experiencias</h3>
-            <ul class="recursos-list">
-                <li>Despaseando y la reconquista peatonal. <em>Cuadernos de caminantes. Una herramienta de registro</em></li>
+        <!-- Parada 3 -->
+        <div class="parada-card">
+          <div class="parada-numero">03</div>
+          <h2>[ título parada 3 ]</h2>
+
+          <div class="parada-info">
+            <div class="info-item">
+              <span class="label">coordenadas:</span>
+              <span class="value">[ lat, lng ]</span>
+            </div>
+          </div>
+
+          <div class="parada-descripcion">
+            <p>[ descripción de la parada ]</p>
+          </div>
+
+          <div class="parada-preguntas">
+            <h3>preguntas orientadoras:</h3>
+            <ul>
+              <li>[ pregunta 1 ]</li>
+              <li>[ pregunta 2 ]</li>
+              <li>[ pregunta 3 ]</li>
             </ul>
+          </div>
+        </div>
 
-            <h3>proyectos de referencia</h3>
-            <ul class="recursos-list">
-                <li>Caminar el agua - <a href="https://www.caminarelagua.com/" target="_blank">caminarelagua.com</a></li>
-                <li>Dame tu fuerza Pegaso. Recorrido Sonoro La Liminal - <a href="https://www.laliminal.com/recorridos-urbanos-1/dame-tu-fuerza-pegaso" target="_blank">laliminal.com</a></li>
-                <li>Janet Cardiff & George Bures Miller - <a href="https://cardiffmiller.com/" target="_blank">cardiffmiller.com</a></li>
-                <li>Jenny Odell - Travel by Approximation: a virtual roadtrip - <a href="https://www.jennyodell.com/tba.html" target="_blank">jennyodell.com</a></li>
-                <li>Mapa emocional de San Pedro - Galiza Emocional - <a href="https://www.galizaemocional.gal/proxecto/mapa-emocional-de-san-pedro/" target="_blank">galizaemocional.gal</a></li>
+        <!-- Parada 4 -->
+        <div class="parada-card">
+          <div class="parada-numero">04</div>
+          <h2>[ título parada 4 ]</h2>
+
+          <div class="parada-info">
+            <div class="info-item">
+              <span class="label">coordenadas:</span>
+              <span class="value">[ lat, lng ]</span>
+            </div>
+          </div>
+
+          <div class="parada-descripcion">
+            <p>[ descripción de la parada ]</p>
+          </div>
+
+          <div class="parada-preguntas">
+            <h3>preguntas orientadoras:</h3>
+            <ul>
+              <li>[ pregunta 1 ]</li>
+              <li>[ pregunta 2 ]</li>
+              <li>[ pregunta 3 ]</li>
             </ul>
+          </div>
+        </div>
+      </section>
 
-            <h3>repositorios de ayudas, becas y subvenciones</h3>
-            <ul class="recursos-list">
-                <li><a href="https://www.poliedrica.cat/es/buscar/?cat0=convocatories" target="_blank">Polièdrica - Convocatorias</a></li>
-                <li>Suscripción a alertas temáticas del BOE - <a href="https://www.boe.es/alertas/alerta.php?tipo=CAN" target="_blank">boe.es</a></li>
-                <li>Suscripción al Boletín de becas, ayudas y premios de la Admon Gral del Estado - <a href="https://administracion.gob.es/pagFront/empleoBecas/becasAyudasPremios/nuevaSuscripcionBeca.htm" target="_blank">administracion.gob.es</a></li>
-            </ul>
-        </section>
+      <!-- RECURSOS -->
+      <section id="recursos">
+        <h1>recursos</h1>
 
-        <footer>
-            <p>TANDEM · La Liminal</p>
-            <p style="margin-top: 10px;">enero 2026</p>
-        </footer>
+        <div class="text-block">
+          <p>
+            Referencias, proyectos similares y herramientas utilizadas durante
+            el taller.
+          </p>
+        </div>
+
+        <h3>bibliografía de referencia</h3>
+        <ul class="recursos-list">
+          <li>
+            CARERI, F. (2014).
+            <em>Walkscapes. El andar como práctica estética</em>, Barcelona:
+            Editorial Gustavo Gil
+          </li>
+          <li>
+            COLECTIVA XXK. (2020).
+            <em>Derivas. Apuntes metodológicos para organizar una deriva</em>,
+            Bilbao: autoeditado. Disponible en
+            <a
+              href="https://colectivaxxk.net/wp-content/uploads/2020/01/Apuntes-metodolo%CC%81gicos-para-organizar-una-deriva.pdf"
+              target="_blank"
+              >colectivaxxk.net</a
+            >
+          </li>
+          <li>
+            ICONOCLASISTAS (2013).
+            <em
+              >Manual de mapeo colectivo. Recursos cartográficos críticos para
+              procesos territoriales de creación colectiva</em
+            >, Buenos Aires: Tinta Lim.n. Disponible en
+            <a href="https://iconoclasistas.net/4322-2/" target="_blank"
+              >iconoclasistas.net</a
+            >
+          </li>
+          <li>
+            JACOBS, J. (2011). <em>Muerte y vida en las grandes ciudades</em>.
+            Madrid: Capitán Swing Libros.
+          </li>
+          <li>
+            JIMÉNEZ, S. (2017). <em>Cómo se hace un paseo de Jane</em>. Madrid:
+            Continta me tienes, 2017.
+          </li>
+          <li>
+            La aventura de aprender. <em>Cómo hacer un paseo de Jane</em> -
+            <a
+              href="https://laaventuradeaprender.intef.es/proyectos_colab/como-hacer-un-paseo-jane/"
+              target="_blank"
+              >laaventuradeaprender.intef.es</a
+            >
+          </li>
+          <li>
+            La liminal. <em>La tierra bajo mis pies</em> -
+            <a
+              href="https://redplanea.org/recursos/la-tierra-bajo-mis-pies/"
+              target="_blank"
+              >redplanea.org</a
+            >
+          </li>
+          <li>
+            SOLNIT, R. (2015). <em>Wanderlust. Una historia del caminar</em>.
+            Madrid: Capitán Swing Libros.
+          </li>
+        </ul>
+
+        <h3>recursos audiovisuales</h3>
+        <ul class="recursos-list">
+          <li>
+            Citizen Jane. Battle for the city -
+            <a
+              href="https://www.youtube.com/watch?v=jL5UcpiCl5M"
+              target="_blank"
+              >YouTube</a
+            >
+            <span class="nota">(no sabemos si es legal compartir esto)</span>
+          </li>
+        </ul>
+
+        <h3>recursos para el registro de experiencias</h3>
+        <ul class="recursos-list">
+          <li>
+            Despaseando y la reconquista peatonal.
+            <em>Cuadernos de caminantes. Una herramienta de registro</em>
+          </li>
+        </ul>
+
+        <h3>proyectos de referencia</h3>
+        <ul class="recursos-list">
+          <li>
+            Caminar el agua -
+            <a href="https://www.caminarelagua.com/" target="_blank"
+              >caminarelagua.com</a
+            >
+          </li>
+          <li>
+            Dame tu fuerza Pegaso. Recorrido Sonoro La Liminal -
+            <a
+              href="https://www.laliminal.com/recorridos-urbanos-1/dame-tu-fuerza-pegaso"
+              target="_blank"
+              >laliminal.com</a
+            >
+          </li>
+          <li>
+            Janet Cardiff & George Bures Miller -
+            <a href="https://cardiffmiller.com/" target="_blank"
+              >cardiffmiller.com</a
+            >
+          </li>
+          <li>
+            Jenny Odell - Travel by Approximation: a virtual roadtrip -
+            <a href="https://www.jennyodell.com/tba.html" target="_blank"
+              >jennyodell.com</a
+            >
+          </li>
+          <li>
+            Mapa emocional de San Pedro - Galiza Emocional -
+            <a
+              href="https://www.galizaemocional.gal/proxecto/mapa-emocional-de-san-pedro/"
+              target="_blank"
+              >galizaemocional.gal</a
+            >
+          </li>
+        </ul>
+
+        <h3>repositorios de ayudas, becas y subvenciones</h3>
+        <ul class="recursos-list">
+          <li>
+            <a
+              href="https://www.poliedrica.cat/es/buscar/?cat0=convocatories"
+              target="_blank"
+              >Polièdrica - Convocatorias</a
+            >
+          </li>
+          <li>
+            Suscripción a alertas temáticas del BOE -
+            <a
+              href="https://www.boe.es/alertas/alerta.php?tipo=CAN"
+              target="_blank"
+              >boe.es</a
+            >
+          </li>
+          <li>
+            Suscripción al Boletín de becas, ayudas y premios de la Admon Gral
+            del Estado -
+            <a
+              href="https://administracion.gob.es/pagFront/empleoBecas/becasAyudasPremios/nuevaSuscripcionBeca.htm"
+              target="_blank"
+              >administracion.gob.es</a
+            >
+          </li>
+        </ul>
+      </section>
+
+      <footer>
+        <p>TANDEM · La Liminal</p>
+        <p style="margin-top: 10px">enero 2026</p>
+      </footer>
     </div>
+
     <script src="./script.js"></script>
-</body>
+  </body>
 </html>

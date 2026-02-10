@@ -60,7 +60,7 @@ function drawLineBetweenDots(fromSection, toSection) {
     line.setAttribute('y1', y1);
     line.setAttribute('x2', x2);
     line.setAttribute('y2', y2);
-    line.setAttribute('stroke', '#3d5a80'); // Color de los puntos
+    line.setAttribute('stroke', '#3d5a80');
     line.setAttribute('stroke-width', '2');
     line.style.opacity = '0';
     
@@ -69,7 +69,7 @@ function drawLineBetweenDots(fromSection, toSection) {
     // Animar la línea
     setTimeout(() => {
         line.style.transition = 'opacity 0.5s';
-        line.style.opacity = '1'; // Sin opacidad, completamente opaco
+        line.style.opacity = '1';
     }, 50);
 }
 
@@ -162,11 +162,6 @@ if (generarBtn && miradaOutput) {
     });
 }
 
-// Cursor personalizado con garabato continuo
-const cursor = document.getElementById('custom-cursor');
-let mouseX = 0, mouseY = 0;
-let cursorX = 0, cursorY = 0;
-
 // Canvas para dibujar el garabato
 const drawCanvas = document.createElement('canvas');
 drawCanvas.id = 'draw-canvas';
@@ -195,9 +190,6 @@ let lastX = 0;
 let lastY = 0;
 
 document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    
     // Dibujar línea continua
     if (!isDrawing) {
         lastX = e.clientX;
@@ -232,36 +224,305 @@ window.addEventListener('resize', () => {
     ctx.lineJoin = 'round';
 });
 
-function animateCursor() {
-    cursorX += (mouseX - cursorX) * 0.15;
-    cursorY += (mouseY - cursorY) * 0.15;
-    cursor.style.left = cursorX + 'px';
-    cursor.style.top = cursorY + 'px';
-    requestAnimationFrame(animateCursor);
+// PUNTOS DE IMAGEN CON HOVER - VERSION DEBUG
+console.log('Iniciando creación de puntos de imagen...');
+
+const imagePointsData = [
+    { x: 25, y: 40, imageNumber: 1 },
+    { x: 60, y: 25, imageNumber: 2 },
+    { x: 45, y: 60, imageNumber: 3 },
+    { x: 80, y: 50, imageNumber: 4 },
+    { x: 15, y: 75, imageNumber: 5 },
+    { x: 35, y: 30, imageNumber: 6 },
+    { x: 70, y: 70, imageNumber: 7 },
+    { x: 50, y: 45, imageNumber: 8 },
+];
+
+function createImagePoints() {
+    const container = document.getElementById('image-points-container');
+    
+    if (!container) {
+        console.error('❌ No se encontró el contenedor image-points-container');
+        return;
+    }
+    
+    console.log('✅ Contenedor encontrado, creando', imagePointsData.length, 'puntos...');
+    
+    imagePointsData.forEach((point, index) => {
+        // Crear elemento punto
+        const pointEl = document.createElement('div');
+        pointEl.className = 'image-point';
+        pointEl.style.left = point.x + '%';
+        pointEl.style.top = point.y + '%';
+        pointEl.innerHTML = '✷';
+        
+        // Crear popup con imagen
+        const popup = document.createElement('div');
+        popup.className = 'image-point-popup';
+        
+        const img = document.createElement('img');
+        const imagePath = `./images/lanzarsealaderiva_0${point.imageNumber}.jpg`;
+        img.src = imagePath;
+        img.alt = `Imagen ${point.imageNumber}`;
+        img.loading = 'lazy';
+        
+        // Debug de carga de imágenes
+        img.onerror = function() {
+            console.error(`❌ Error cargando: ${imagePath}`);
+        };
+        
+        img.onload = function() {
+            console.log(`✅ Imagen cargada: ${imagePath}`);
+        };
+        
+        popup.appendChild(img);
+        pointEl.appendChild(popup);
+        
+        // Posicionar popup dinámicamente
+        pointEl.addEventListener('mouseenter', function() {
+            const rect = pointEl.getBoundingClientRect();
+            const popupWidth = 300;
+            const popupHeight = 400;
+            
+            popup.style.left = '25px';
+            popup.style.top = '0';
+            
+            if (rect.right + popupWidth > window.innerWidth) {
+                popup.style.left = 'auto';
+                popup.style.right = '25px';
+            }
+            
+            if (rect.bottom + popupHeight > window.innerHeight) {
+                popup.style.top = 'auto';
+                popup.style.bottom = '0';
+            }
+        });
+        
+        container.appendChild(pointEl);
+        console.log(`✅ Punto ${index + 1} añadido`);
+    });
 }
 
-// Activar cursor solo en desktop
-if (window.innerWidth > 768) {
-    cursor.style.display = 'block';
-    animateCursor();
-}
-
-// Efecto hover en dots
-dots.forEach(dot => {
-    dot.addEventListener('mouseenter', function() {
-        cursor.style.transform = 'scale(2)';
-    });
-    dot.addEventListener('mouseleave', function() {
-        cursor.style.transform = 'scale(1)';
-    });
-});
-
-// Efecto hover en botón generar
-if (generarBtn) {
-    generarBtn.addEventListener('mouseenter', function() {
-        cursor.style.transform = 'scale(2)';
-    });
-    generarBtn.addEventListener('mouseleave', function() {
-        cursor.style.transform = 'scale(1)';
+// Inicializar puntos al cargar
+console.log('Ejecutando createImagePoints...');
+createImagePoints();
+// ROTAR TEXTO - VERSIÓN AJUSTADA
+function rotateText(selector, maxRotation = 3) {
+    const elements = document.querySelectorAll(selector);
+    
+    elements.forEach(element => {
+        const text = element.textContent;
+        const letters = text.split('');
+        
+        element.innerHTML = letters.map(letter => {
+            if (letter === ' ') return ' ';
+            const rotation = (Math.random() - 0.5) * maxRotation * 2;
+            return `<span style="display: inline-block; transform: rotate(${rotation}deg);">${letter}</span>`;
+        }).join('');
     });
 }
+
+// Aplicar rotaciones
+rotateText('p', 7);        // Párrafos - rotación moderada
+rotateText('h2', 10);      // H2 - más exagerado
+rotateText('h3', 8);       // H3 - algo exagerado
+rotateText('.subtitle', 5); // Subtítulo - sutil
+rotateText('li', 5);       // Items de listas - sutil
+rotateText('.label', 4);   // Labels - muy sutil
+
+// Ocultar/mostrar estrellas según el contenido
+function toggleImagePoints() {
+    const imagePointsContainer = document.getElementById('image-points-container');
+    const contentActive = content.classList.contains('active');
+    
+    if (contentActive) {
+        imagePointsContainer.style.opacity = '0';
+        imagePointsContainer.style.pointerEvents = 'none';
+    } else {
+        imagePointsContainer.style.opacity = '1';
+        imagePointsContainer.style.pointerEvents = 'none'; // Mantener none para que no bloqueen clicks
+    }
+}
+
+// Actualizar las funciones existentes
+const originalShowSection = showSection;
+showSection = function(sectionId) {
+    originalShowSection(sectionId);
+    toggleImagePoints();
+};
+
+const originalHideContent = hideContent;
+hideContent = function() {
+    originalHideContent();
+    toggleImagePoints();
+};
+
+// ========== FASE DE DERIVA INICIAL ==========
+const driftFragments = [
+    "mirar la ciudad es siempre un ejercicio político",
+    "cada cuerpo porta sus propios deseos",
+    "el juego constreñido a los límites del parque",
+    "la ciudad diseñada para otros cuerpos",
+    "fuentes clausuradas en el barrio de las aguas",
+    "el barrio se infla de gente rica",
+    "se desinfla de vecinas de siempre",
+    "busca calles pequeñas y pintorescas",
+    "la ciudad se torna imagen",
+    "ausencia de lugares de descanso",
+    "calles amables, cuerpos cansados",
+    "caminar desautomatiza la percepción",
+    "geografías afectivas borradas",
+    "el espacio no es un contenedor vacío",
+    "un campo de fuerzas y conflictos"
+];
+
+const driftScreen = document.getElementById('drift-screen');
+const driftContainer = document.getElementById('drift-container');
+const revealedCountDisplay = document.getElementById('revealed-count');
+
+let revealedCount = 0;
+let distanceTraveled = 0;
+let lastMouseX = 0;
+let lastMouseY = 0;
+
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const REQUIRED_FRAGMENTS = 15;
+const REVEAL_DISTANCE = 150; // píxeles de movimiento necesarios
+
+// Iniciar según dispositivo
+if (isMobile) {
+    initMobileDrift();
+} else {
+    initDesktopDrift();
+}
+
+// DESKTOP: Revelar con movimiento del mouse
+function initDesktopDrift() {
+    document.addEventListener('mousemove', handleMouseDrift);
+}
+
+function handleMouseDrift(e) {
+    if (revealedCount >= REQUIRED_FRAGMENTS) return;
+    
+    const dx = e.clientX - lastMouseX;
+    const dy = e.clientY - lastMouseY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    distanceTraveled += distance;
+    
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+    
+    if (distanceTraveled > REVEAL_DISTANCE) {
+        revealFragment(e.clientX, e.clientY);
+        distanceTraveled = 0;
+    }
+}
+
+// MÓVIL: Revelar con podómetro/touch
+function initMobileDrift() {
+    // Intentar usar acelerómetro
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+        // iOS 13+ requiere permiso
+        DeviceMotionEvent.requestPermission()
+            .then(response => {
+                if (response === 'granted') {
+                    startAccelerometer();
+                } else {
+                    useTouchFallback();
+                }
+            })
+            .catch(() => useTouchFallback());
+    } else if (window.DeviceMotionEvent) {
+        startAccelerometer();
+    } else {
+        useTouchFallback();
+    }
+}
+
+function startAccelerometer() {
+    let lastTime = Date.now();
+    let stepCount = 0;
+    
+    window.addEventListener('devicemotion', (e) => {
+        if (revealedCount >= REQUIRED_FRAGMENTS) return;
+        
+        const acc = e.accelerationIncludingGravity;
+        const movement = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
+        
+        const currentTime = Date.now();
+        
+        // Detectar "paso" (pico de movimiento)
+        if (movement > 20 && currentTime - lastTime > 300) {
+            stepCount++;
+            
+            if (stepCount % 3 === 0) { // Cada 3 pasos
+                revealFragmentRandom();
+            }
+            
+            lastTime = currentTime;
+        }
+    });
+}
+
+function useTouchFallback() {
+    let touchCount = 0;
+    
+    document.addEventListener('touchmove', (e) => {
+        if (revealedCount >= REQUIRED_FRAGMENTS) return;
+        
+        touchCount++;
+        
+        if (touchCount % 30 === 0) { // Cada 30 movimientos de touch
+            const touch = e.touches[0];
+            revealFragment(touch.clientX, touch.clientY);
+        }
+    });
+}
+
+function revealFragment(x, y) {
+    if (revealedCount >= REQUIRED_FRAGMENTS) return;
+    
+    const fragment = document.createElement('div');
+    fragment.className = 'drift-fragment';
+    fragment.textContent = driftFragments[revealedCount];
+    
+    // Posición con margen desde bordes
+    const safeX = Math.max(20, Math.min(x, window.innerWidth - 320));
+    const safeY = Math.max(20, Math.min(y, window.innerHeight - 100));
+    
+    fragment.style.left = safeX + 'px';
+    fragment.style.top = safeY + 'px';
+    
+    driftContainer.appendChild(fragment);
+    
+    setTimeout(() => fragment.classList.add('visible'), 10);
+    
+    revealedCount++;
+    revealedCountDisplay.textContent = revealedCount;
+    
+    if (revealedCount >= REQUIRED_FRAGMENTS) {
+        completeDrift();
+    }
+}
+
+function revealFragmentRandom() {
+    const x = Math.random() * (window.innerWidth - 320) + 20;
+    const y = Math.random() * (window.innerHeight - 100) + 20;
+    revealFragment(x, y);
+}
+
+function completeDrift() {
+    setTimeout(() => {
+        driftScreen.classList.add('completed');
+        document.removeEventListener('mousemove', handleMouseDrift);
+        
+        // Iniciar web normal después de la transición
+        setTimeout(() => {
+            driftScreen.style.display = 'none';
+        }, 800);
+    }, 1000);
+}
+
+// ========== TU CÓDIGO ACTUAL CONTINÚA AQUÍ ==========
+// Navegación por puntos...

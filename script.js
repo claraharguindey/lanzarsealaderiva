@@ -301,7 +301,7 @@ hideContent = function() {
     originalHideContent();
     toggleImagePoints();
 };
-
+// ========== FASE DE DERIVA INICIAL - VERSIÓN RÁPIDA ==========
 const driftFragments = [
     "mirar la ciudad es siempre un ejercicio político",
     "cada cuerpo porta sus propios deseos",
@@ -332,21 +332,24 @@ let lastMouseY = 0;
 const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 const REQUIRED_FRAGMENTS = 15;
-const REVEAL_DISTANCE = 150;
+const REVEAL_DISTANCE = 100; // Reducido para desktop
 
+// Variables para podómetro - AJUSTADAS PARA SER MÁS SENSIBLES
 let lastAcceleration = { x: 0, y: 0, z: 0 };
 let stepDetected = false;
-const STEP_THRESHOLD = 15;
-const STEP_COOLDOWN = 400;
-const STEPS_PER_FRAGMENT = 5;
+const STEP_THRESHOLD = 8; // Más bajo = más sensible
+const STEP_COOLDOWN = 250; // Más rápido = detecta pasos más seguido
+const STEPS_PER_FRAGMENT = 3; // Menos pasos por fragmento
 let stepCounter = 0;
 
+// Iniciar según dispositivo
 if (isMobile) {
     initMobileDrift();
 } else {
     initDesktopDrift();
 }
 
+// DESKTOP: Revelar con movimiento del mouse
 function initDesktopDrift() {
     showInstruction('Mueve el ratón para revelar los fragmentos');
     document.addEventListener('mousemove', handleMouseDrift);
@@ -370,23 +373,18 @@ function handleMouseDrift(e) {
     }
 }
 
+// MÓVIL: Detectar si necesita permisos
 function initMobileDrift() {
-    console.log('📱 Iniciando modo móvil...');
-    console.log('🔍 iOS detectado:', isIOS);
+    console.log('📱 Modo móvil iniciado');
     
-    if (typeof DeviceMotionEvent !== 'undefined' && 
-        typeof DeviceMotionEvent.requestPermission === 'function') {
-        
-        console.log('🔐 iOS 13+ - Requiere permisos');
+    const needsPermission = typeof DeviceMotionEvent !== 'undefined' && 
+                           typeof DeviceMotionEvent.requestPermission === 'function';
+    
+    if (needsPermission) {
         showPermissionButton();
-        
-    } 
-    else if (window.DeviceMotionEvent) {
-        console.log('✅ Acelerómetro disponible - Iniciando directo');
+    } else if (window.DeviceMotionEvent) {
         startPedometer();
-    } 
-    else {
-        console.log('⚠️ Sin acelerómetro - Usando fallback');
+    } else {
         useTapFallback();
     }
 }
@@ -394,54 +392,59 @@ function initMobileDrift() {
 function showPermissionButton() {
     const permButton = document.createElement('button');
     permButton.innerHTML = `
-        <div style="font-size: 16px; margin-bottom: 8px;">Para revelar los fragmentos</div>
-        <div style="font-size: 20px; font-weight: bold;">Activar podómetro 🚶‍♀️</div>
+        <div style="font-size: 16px; margin-bottom: 8px;">Toca para activar</div>
+        <div style="font-size: 24px;">🚶‍♀️</div>
+        <div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">Podómetro</div>
     `;
     permButton.style.cssText = `
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        padding: 30px 50px;
+        padding: 40px 60px;
         background: linear-gradient(135deg, #ee6c4d 0%, #d95d3f 100%);
         color: white;
         border: none;
-        border-radius: 40px;
+        border-radius: 50px;
         font-family: inherit;
         cursor: pointer;
-        z-index: 1000;
-        box-shadow: 0 8px 30px rgba(238, 108, 77, 0.4);
+        z-index: 10000;
+        box-shadow: 0 10px 40px rgba(238, 108, 77, 0.5);
         text-align: center;
-        line-height: 1.4;
+        line-height: 1.5;
+        -webkit-tap-highlight-color: transparent;
     `;
     
-    permButton.addEventListener('click', requestMotionPermission);
+    permButton.onclick = function() {
+        console.log('🖱️ Solicitando permisos...');
+        
+        DeviceMotionEvent.requestPermission()
+            .then(response => {
+                console.log('📋 Respuesta:', response);
+                
+                if (response === 'granted') {
+                    permButton.remove();
+                    startPedometer();
+                } else {
+                    permButton.remove();
+                    showPermissionDenied();
+                }
+            })
+            .catch(error => {
+                console.error('💥 Error:', error);
+                permButton.remove();
+                useTapFallback();
+            });
+    };
     
     driftScreen.appendChild(permButton);
-}
-
-async function requestMotionPermission() {
-    try {
-        const response = await DeviceMotionEvent.requestPermission();
-        
-        if (response === 'granted') {
-            console.log('✅ Permisos concedidos');
-            document.querySelector('button')?.remove();
-            startPedometer();
-        } else {
-            console.log('❌ Permisos denegados');
-            showPermissionDenied();
-        }
-    } catch (error) {
-        console.error('Error solicitando permisos:', error);
-        useTapFallback();
-    }
 }
 
 function showPermissionDenied() {
     const message = document.createElement('div');
     message.innerHTML = `
-        <div style="margin-bottom: 15px;">No se pueden detectar tus pasos</div>
+        <div style="margin-bottom: 15px; font-size: 18px;">⚠️</div>
+        <div style="margin-bottom: 10px;">No se pueden detectar tus pasos</div>
         <div style="font-size: 14px; opacity: 0.8;">Toca la pantalla para continuar</div>
     `;
     message.style.cssText = `
@@ -449,17 +452,16 @@ function showPermissionDenied() {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        padding: 30px;
+        padding: 30px 40px;
         background: rgba(61, 90, 128, 0.95);
         color: white;
-        border-radius: 20px;
+        border-radius: 30px;
         font-family: inherit;
-        z-index: 1000;
+        z-index: 10000;
         text-align: center;
         max-width: 80%;
     `;
     
-    document.querySelector('button')?.remove();
     driftScreen.appendChild(message);
     
     setTimeout(() => {
@@ -469,10 +471,39 @@ function showPermissionDenied() {
 }
 
 function startPedometer() {
-    console.log('🚶 Podómetro iniciado');
+    console.log('🚶 Podómetro activado - ¡Mueve el móvil!');
     
     window.addEventListener('devicemotion', handleMotion);
-    showInstruction('Camina para revelar los fragmentos');
+    showInstruction('Camina o mueve el móvil');
+    
+    showStepCounter();
+}
+
+function showStepCounter() {
+    const counter = document.createElement('div');
+    counter.id = 'step-counter';
+    counter.textContent = '0 pasos';
+    counter.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(152, 193, 217, 0.9);
+        color: #293241;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 999;
+    `;
+    
+    driftScreen.appendChild(counter);
+}
+
+function updateStepCounter() {
+    const counter = document.getElementById('step-counter');
+    if (counter) {
+        counter.textContent = `${stepCounter} pasos`;
+    }
 }
 
 function handleMotion(event) {
@@ -480,10 +511,7 @@ function handleMotion(event) {
     
     const acc = event.accelerationIncludingGravity;
     
-    if (!acc || acc.x === null) {
-        console.log('⚠️ Sin datos de acelerómetro');
-        return;
-    }
+    if (!acc || acc.x === null) return;
     
     const deltaX = Math.abs(acc.x - lastAcceleration.x);
     const deltaY = Math.abs(acc.y - lastAcceleration.y);
@@ -494,11 +522,13 @@ function handleMotion(event) {
         stepDetected = true;
         stepCounter++;
         
-        console.log(`👟 Paso ${stepCounter} (delta: ${totalDelta.toFixed(2)})`);
+        updateStepCounter();
+        console.log(`👟 Paso ${stepCounter} (Δ=${totalDelta.toFixed(1)})`);
         
         if (stepCounter % STEPS_PER_FRAGMENT === 0) {
             revealFragmentRandom();
             vibrate();
+            console.log(`✨ Fragmento revelado! (${revealedCount}/${REQUIRED_FRAGMENTS})`);
         }
         
         setTimeout(() => {
@@ -510,17 +540,17 @@ function handleMotion(event) {
 }
 
 function useTapFallback() {
-    console.log('👆 Modo táctil activado');
-    showInstruction('Toca la pantalla para revelar fragmentos');
+    console.log('👆 Modo táctil');
+    showInstruction('Toca para revelar');
     
     let tapCount = 0;
     
-    document.addEventListener('touchstart', (e) => {
+    driftScreen.addEventListener('touchstart', (e) => {
         if (revealedCount >= REQUIRED_FRAGMENTS) return;
         
         tapCount++;
         
-        if (tapCount % 3 === 0) {
+        if (tapCount % 2 === 0) {
             const touch = e.touches[0];
             revealFragment(touch.clientX, touch.clientY);
             vibrate();
@@ -533,22 +563,26 @@ function showInstruction(text) {
     instruction.textContent = text;
     instruction.style.cssText = `
         position: fixed;
-        bottom: 100px;
+        bottom: 120px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(61, 90, 128, 0.9);
+        background: rgba(61, 90, 128, 0.95);
         color: white;
         padding: 15px 30px;
-        border-radius: 25px;
-        font-size: 14px;
+        border-radius: 30px;
+        font-size: 15px;
         z-index: 999;
         text-align: center;
         max-width: 80%;
-        animation: fadeInOut 4s ease-in-out;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     `;
     
     driftScreen.appendChild(instruction);
-    setTimeout(() => instruction.remove(), 4000);
+    setTimeout(() => {
+        instruction.style.transition = 'opacity 0.5s';
+        instruction.style.opacity = '0';
+        setTimeout(() => instruction.remove(), 500);
+    }, 4000);
 }
 
 function vibrate() {
@@ -577,8 +611,6 @@ function revealFragment(x, y) {
     revealedCount++;
     revealedCountDisplay.textContent = revealedCount;
     
-    console.log(`✨ Fragmento ${revealedCount}/${REQUIRED_FRAGMENTS}`);
-    
     if (revealedCount >= REQUIRED_FRAGMENTS) {
         completeDrift();
     }
@@ -592,6 +624,9 @@ function revealFragmentRandom() {
 
 function completeDrift() {
     console.log('🎉 Deriva completada');
+    
+    const counter = document.getElementById('step-counter');
+    if (counter) counter.remove();
     
     setTimeout(() => {
         driftScreen.classList.add('completed');

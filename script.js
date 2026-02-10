@@ -301,6 +301,7 @@ hideContent = function() {
     originalHideContent();
     toggleImagePoints();
 };
+
 // ========== FASE DE DERIVA INICIAL - VERSIÓN AJUSTADA ==========
 const driftFragments = [
     "mirar la ciudad es siempre un ejercicio político",
@@ -338,7 +339,7 @@ let lastAcceleration = { x: 0, y: 0, z: 0 };
 let stepDetected = false;
 const STEP_THRESHOLD = 12;
 const STEP_COOLDOWN = 350; 
-const STEPS_PER_FRAGMENT = 4;
+const STEPS_PER_FRAGMENT = 1; // 1 fragmento por paso
 let stepCounter = 0;
 
 if (isMobile) {
@@ -387,29 +388,25 @@ function initMobileDrift() {
 
 function showPermissionButton() {
     const permButton = document.createElement('button');
-    permButton.textContent = 'activar podómetro';
+    permButton.textContent = 'activar';
     permButton.style.cssText = `
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        padding: 15px 35px;
-        background: #ee6c4d;
-        color: #f1faee;
+        padding: 0;
+        background: transparent;
+        color: #3d5a80;
         border: none;
-        border-radius: 30px;
         font-family: inherit;
-        font-size: 16px;
+        font-size: 18px;
         cursor: pointer;
         z-index: 10000;
         -webkit-tap-highlight-color: transparent;
-        transition: transform 0.2s ease;
     `;
     
     permButton.onclick = function() {
         console.log('🖱️ Solicitando permisos...');
-        
-        permButton.style.transform = 'translate(-50%, -50%) scale(0.95)';
         
         DeviceMotionEvent.requestPermission()
             .then(response => {
@@ -496,6 +493,7 @@ function handleMotion(event) {
         updateStepCounter();
         console.log(`👟 Paso ${stepCounter} (Δ=${totalDelta.toFixed(1)})`);
         
+        // Revelar fragmento en CADA paso
         if (stepCounter % STEPS_PER_FRAGMENT === 0) {
             revealFragmentRandom();
             vibrate();
@@ -520,7 +518,7 @@ function useTapFallback() {
         
         tapCount++;
         
-        if (tapCount % 3 === 0) {
+        if (tapCount % 2 === 0) {
             const touch = e.touches[0];
             revealFragment(touch.clientX, touch.clientY);
             vibrate();

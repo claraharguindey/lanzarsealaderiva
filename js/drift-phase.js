@@ -2,7 +2,6 @@ const driftFragments = [
     "mirar la ciudad es siempre un ejercicio político",
     "cada cuerpo porta sus deseos",
     "el juego no respeta los límites del parque",
-    "la ciudad fue diseñada para otros cuerpos",
     "qué son estas fuentes clausuradas en el barrio de las aguas",
     "el barrio se infla por unos lugares",
     "y se desinfla por otros",
@@ -36,8 +35,8 @@ const driftFragments = [
   let accelerationHistory = [];
   const historySize = 10;
   let lastStepTime = 0;
-  const stepCooldown = 500;
-  let stepsPerFragment = 5;
+  const stepCooldown = 400; // Más rápido
+  let stepsPerFragment = 3; // Menos pasos necesarios
   let stepsSinceLastFragment = 0;
   
   // Variables para indicador de movimiento
@@ -47,7 +46,6 @@ const driftFragments = [
   let movementCheckInterval = null;
   
   const initDesktopDrift = () => {
-    showInstruction("mueve el ratón para revelar los fragmentos");
     document.addEventListener("mousemove", handleMouseDrift);
   };
   
@@ -81,7 +79,7 @@ const driftFragments = [
     } else if (window.DeviceMotionEvent) {
       startMotionDetection();
     } else {
-      useTapFallback();
+      useTapMode();
     }
   };
   
@@ -116,24 +114,17 @@ const driftFragments = [
             startMotionDetection();
           } else {
             permButton.remove();
-            showPermissionDenied();
+            useTapMode();
           }
         })
         .catch((error) => {
           console.error("💥 Error:", error);
           permButton.remove();
-          useTapFallback();
+          useTapMode();
         });
     };
   
     driftScreen.appendChild(permButton);
-  };
-  
-  const showPermissionDenied = () => {
-    showInstruction("toca la pantalla para revelar");
-    setTimeout(() => {
-      useTapFallback();
-    }, 2000);
   };
   
   const startMotionDetection = () => {
@@ -142,8 +133,8 @@ const driftFragments = [
     accelerationHistory = [];
     window.addEventListener("devicemotion", handleMotion);
     
-    showInstruction("camina, o agita tu móvil como si estuvieses de paseo");
     showMovementIndicator();
+    showTapHelper(); // Siempre mostrar ayuda de tap como backup
     
     movementCheckInterval = setInterval(checkMovementStatus, 200);
   };
@@ -165,6 +156,35 @@ const driftFragments = [
     `;
     
     driftScreen.appendChild(indicator);
+  };
+  
+  const showTapHelper = () => {
+    const helper = document.createElement("div");
+    helper.textContent = "o toca la pantalla";
+    helper.style.cssText = `
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #f1faee;
+      font-size: 12px;
+      font-family: inherit;
+      z-index: 999;
+      opacity: 0.6;
+    `;
+    
+    driftScreen.appendChild(helper);
+    
+    // Habilitar taps como backup
+    driftScreen.addEventListener("touchstart", handleTap);
+  };
+  
+  const handleTap = (e) => {
+    if (revealedCount >= REQUIRED_FRAGMENTS) return;
+    
+    const touch = e.touches[0];
+    revealFragment(touch.clientX, touch.clientY);
+    vibrate();
   };
   
   const updateMovementStatus = (moving) => {
@@ -230,7 +250,8 @@ const driftFragments = [
     const middle = recent[1];
     const isPeak = middle > recent[0] && middle > recent[2];
   
-    const threshold = isAndroid ? 2.0 : 2.5;
+    // Umbral MÁS BAJO para ser más sensible
+    const threshold = isAndroid ? 1.5 : 2.0;
   
     if (isPeak && stdDev > threshold) {
       lastStepTime = currentTime;
@@ -242,7 +263,7 @@ const driftFragments = [
         updateMovementStatus(true);
       }
       
-      console.log(`👟 Paso ${stepsSinceLastFragment}/5 (stdDev: ${stdDev.toFixed(2)})`);
+      console.log(`👟 Paso ${stepsSinceLastFragment}/${stepsPerFragment} (stdDev: ${stdDev.toFixed(2)})`);
       
       if (stepsSinceLastFragment >= stepsPerFragment) {
         stepsSinceLastFragment = 0;
@@ -252,47 +273,25 @@ const driftFragments = [
     }
   };
   
-  const useTapFallback = () => {
-    console.log("👆 Modo táctil");
-  
-    let tapCount = 0;
-  
-    driftScreen.addEventListener("touchstart", (e) => {
-      if (revealedCount >= REQUIRED_FRAGMENTS) return;
-  
-      tapCount++;
-  
-      if (tapCount % 2 === 0) {
-        const touch = e.touches[0];
-        revealFragment(touch.clientX, touch.clientY);
-        vibrate();
-      }
-    });
-  };
-  
-  const showInstruction = (text) => {
+  const useTapMode = () => {
+    console.log("👆 Modo táctil puro");
+    
     const instruction = document.createElement("div");
-    instruction.textContent = text;
+    instruction.textContent = "toca la pantalla para revelar";
     instruction.style.cssText = `
       position: fixed;
       bottom: 120px;
       left: 50%;
       transform: translateX(-50%);
       color: #f1faee;
-      border: none;
       font-size: 14px;
       font-family: inherit;
       z-index: 999;
       text-align: center;
-      max-width: 80%;
     `;
-  
+    
     driftScreen.appendChild(instruction);
-    setTimeout(() => {
-      instruction.style.transition = "opacity 0.5s";
-      instruction.style.opacity = "0";
-      setTimeout(() => instruction.remove(), 500);
-    }, 4000);
+    driftScreen.addEventListener("touchstart", handleTap);
   };
   
   const vibrate = () => {
@@ -389,6 +388,7 @@ const driftFragments = [
       driftScreen.classList.add("completed");
       window.removeEventListener("devicemotion", handleMotion);
       document.removeEventListener("mousemove", handleMouseDrift);
+      driftScreen.removeEventListener("touchstart", handleTap);
   
       setTimeout(() => {
         driftScreen.style.display = "none";

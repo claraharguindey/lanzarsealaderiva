@@ -1,4 +1,3 @@
-// FASE DE DERIVA INICIAL - CON GIROSCOPIO
 const driftFragments = [
   "mirar la ciudad es siempre un ejercicio político",
   "cada cuerpo porta sus deseos",
@@ -35,11 +34,9 @@ const REVEAL_DISTANCE = 200;
 let lastAcceleration = { x: 0, y: 0, z: 0 };
 let lastRotation = { alpha: 0, beta: 0, gamma: 0 };
 let movementDetected = false;
-const MOVEMENT_THRESHOLD = 10;
-const MOVEMENT_COOLDOWN = 300;
-let movementCounter = 0;
+const MOVEMENT_THRESHOLD = 6;
+const MOVEMENT_COOLDOWN = 200; 
 
-// DECLARAR TODAS LAS FUNCIONES PRIMERO
 const initDesktopDrift = () => {
   showInstruction("mueve el ratón para revelar los fragmentos");
   document.addEventListener("mousemove", handleMouseDrift);
@@ -58,7 +55,7 @@ const handleMouseDrift = (e) => {
   lastMouseY = e.clientY;
 
   if (distanceTraveled > REVEAL_DISTANCE) {
-    revealFragment(e.clientX, e.clientY); // Ahora usa la posición del ratón
+    revealFragment(e.clientX, e.clientY);
     distanceTraveled = 0;
   }
 };
@@ -137,7 +134,6 @@ const startMotionDetection = () => {
   window.addEventListener("deviceorientation", handleOrientation);
 
   showInstruction("mueve el móvil para revelar");
-  showStepCounter();
 };
 
 const handleMotion = (event) => {
@@ -174,7 +170,8 @@ const handleOrientation = (event) => {
 
   console.log(`🧭 Rotación: ${rotationDelta.toFixed(1)}`);
 
-  if (rotationDelta > 15) {
+  if (rotationDelta > 10) {
+    // También más sensible
     detectMovement("giroscopio", rotationDelta);
   }
 
@@ -185,10 +182,8 @@ const detectMovement = (sensor, value) => {
   if (movementDetected) return;
 
   movementDetected = true;
-  movementCounter++;
 
-  updateStepCounter();
-  console.log(`🎯 Movimiento detectado por ${sensor} (${movementCounter})`);
+  console.log(`🎯 Movimiento detectado por ${sensor}`);
 
   revealFragmentRandom();
   vibrate();
@@ -196,32 +191,6 @@ const detectMovement = (sensor, value) => {
   setTimeout(() => {
     movementDetected = false;
   }, MOVEMENT_COOLDOWN);
-};
-
-const showStepCounter = () => {
-  const counter = document.createElement("div");
-  counter.id = "step-counter";
-  counter.textContent = "0";
-  counter.style.cssText = `
-          position: fixed;
-          top: 30px;
-          right: 30px;
-          color: #293241;
-          padding: 8px 16px;
-          border: none;
-          font-size: 13px;
-          font-family: inherit;
-          z-index: 999;
-      `;
-
-  driftScreen.appendChild(counter);
-};
-
-const updateStepCounter = () => {
-  const counter = document.getElementById("step-counter");
-  if (counter) {
-    counter.textContent = `${movementCounter}`;
-  }
 };
 
 const useTapFallback = () => {
@@ -307,9 +276,6 @@ const revealFragmentRandom = () => {
 const completeDrift = () => {
   console.log("🎉 Deriva completada");
 
-  const counter = document.getElementById("step-counter");
-  if (counter) counter.remove();
-
   setTimeout(() => {
     driftScreen.classList.add("completed");
     window.removeEventListener("devicemotion", handleMotion);
@@ -322,7 +288,6 @@ const completeDrift = () => {
   }, 1000);
 };
 
-// AHORA SÍ EJECUTAR
 if (isMobile) {
   initMobileDrift();
 } else {

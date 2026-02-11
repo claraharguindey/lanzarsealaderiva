@@ -32,17 +32,16 @@ const isAndroid = /Android/i.test(navigator.userAgent);
 const REQUIRED_FRAGMENTS = 16;
 const REVEAL_DISTANCE = 200;
 
-// Variables para detección automática
-let autoRevealInterval = null;
-let hasStartedWalking = false;
-const AUTO_REVEAL_DELAY = 3000; // Revela una frase cada 3 segundos
-
-// Variables para detección de movimiento
 let accelerationHistory = [];
 const historySize = 10;
+let lastStepTime = 0;
+const stepCooldown = 350;
+let stepsPerFragment = 1;
+let stepsSinceLastFragment = 0;
+
 let isMoving = false;
 let lastMovementTime = 0;
-const movementTimeout = 2000;
+const movementTimeout = 1500;
 let movementCheckInterval = null;
 
 const initDesktopDrift = () => {
@@ -134,7 +133,7 @@ const startMotionDetection = () => {
   window.addEventListener("devicemotion", handleMotion);
 
   showMovementIndicator();
-  showWalkingInstruction();
+  showTapHelper();
 
   movementCheckInterval = setInterval(checkMovementStatus, 200);
 };
@@ -158,23 +157,32 @@ const showMovementIndicator = () => {
   driftScreen.appendChild(indicator);
 };
 
-const showWalkingInstruction = () => {
-  const instruction = document.createElement("div");
-  instruction.id = "walking-instruction";
-  instruction.textContent = "empieza a caminar";
-  instruction.style.cssText = `
+const showTapHelper = () => {
+  const helper = document.createElement("div");
+  helper.textContent = "o toca la pantalla";
+  helper.style.cssText = `
       position: fixed;
-      bottom: 120px;
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
       color: #f1faee;
-      font-size: 14px;
+      font-size: 12px;
       font-family: inherit;
       z-index: 999;
-      text-align: center;
+      opacity: 0.6;
     `;
 
-  driftScreen.appendChild(instruction);
+  driftScreen.appendChild(helper);
+
+  driftScreen.addEventListener("touchstart", handleTap);
+};
+
+const handleTap = (e) => {
+  if (revealedCount >= REQUIRED_FRAGMENTS) return;
+
+  const touch = e.touches[0];
+  revealFragment(touch.clientX, touch.clientY);
+  vibrate();
 };
 
 const updateMovementStatus = (moving) => {
@@ -199,7 +207,6 @@ const checkMovementStatus = () => {
   if (isMoving && timeSinceLastMovement > movementTimeout) {
     isMoving = false;
     updateMovementStatus(false);
-    stopAutoReveal();
   }
 };
 
@@ -219,11 +226,18 @@ const handleMotion = (event) => {
   }
 
   if (accelerationHistory.length >= historySize) {
-    detectMovement();
+    detectStep();
   }
 };
 
-const detectMovement = () => {
+const detectStep = () => {
+  const currentTime = Date.now();
+  const timeSinceLastStep = currentTime - lastStepTime;
+
+  if (timeSinceLastStep < stepCooldown) {
+    return;
+  }
+
   const avg =
     accelerationHistory.reduce((a, b) => a + b, 0) / accelerationHistory.length;
   const variance =
@@ -231,53 +245,33 @@ const detectMovement = () => {
     accelerationHistory.length;
   const stdDev = Math.sqrt(variance);
 
-  const threshold = isAndroid ? 0.5 : 0.8;
+  const recent = accelerationHistory.slice(-3);
+  const middle = recent[1];
+  const isPeak = middle > recent[0] && middle > recent[2];
 
-  if (stdDev > threshold) {
-    lastMovementTime = Date.now();
+  const threshold = isAndroid ? 0.8 : 1.0;
+
+  if (isPeak && stdDev > threshold) {
+    lastStepTime = currentTime;
+    lastMovementTime = currentTime;
+    stepsSinceLastFragment++;
 
     if (!isMoving) {
       isMoving = true;
       updateMovementStatus(true);
-
-      // Primera vez que detecta movimiento
-      if (!hasStartedWalking) {
-        hasStartedWalking = true;
-        startAutoReveal();
-
-        // Ocultar instrucción
-        const instruction = document.getElementById("walking-instruction");
-        if (instruction) {
-          instruction.style.transition = "opacity 0.5s";
-          instruction.style.opacity = "0";
-          setTimeout(() => instruction.remove(), 500);
-        }
-      }
     }
-  }
-};
 
-const startAutoReveal = () => {
-  console.log("🚶 Caminata iniciada - Revelando automáticamente");
+    console.log(
+      `👟 Paso ${stepsSinceLastFragment}/${stepsPerFragment} (stdDev: ${stdDev.toFixed(
+        2
+      )})`
+    );
 
-  revealFragmentRandom();
-  vibrate();
-
-  autoRevealInterval = setInterval(() => {
-    if (revealedCount < REQUIRED_FRAGMENTS) {
+    if (stepsSinceLastFragment >= stepsPerFragment) {
+      stepsSinceLastFragment = 0;
       revealFragmentRandom();
       vibrate();
-    } else {
-      stopAutoReveal();
     }
-  }, AUTO_REVEAL_DELAY);
-};
-
-const stopAutoReveal = () => {
-  if (autoRevealInterval) {
-    clearInterval(autoRevealInterval);
-    autoRevealInterval = null;
-    console.log("⏸️ Auto-reveal pausado");
   }
 };
 
@@ -299,14 +293,7 @@ const useTapMode = () => {
     `;
 
   driftScreen.appendChild(instruction);
-
-  driftScreen.addEventListener("touchstart", (e) => {
-    if (revealedCount >= REQUIRED_FRAGMENTS) return;
-
-    const touch = e.touches[0];
-    revealFragment(touch.clientX, touch.clientY);
-    vibrate();
-  });
+  driftScreen.addEventListener("touchstart", handleTap);
 };
 
 const vibrate = () => {
@@ -400,15 +387,11 @@ const completeDrift = () => {
     movementCheckInterval = null;
   }
 
-  if (autoRevealInterval) {
-    clearInterval(autoRevealInterval);
-    autoRevealInterval = null;
-  }
-
   setTimeout(() => {
     driftScreen.classList.add("completed");
     window.removeEventListener("devicemotion", handleMotion);
     document.removeEventListener("mousemove", handleMouseDrift);
+    driftScreen.removeEventListener("touchstart", handleTap);
 
     setTimeout(() => {
       driftScreen.style.display = "none";

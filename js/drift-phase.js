@@ -35,7 +35,7 @@ let lastAcceleration = { x: 0, y: 0, z: 0 };
 let lastRotation = { alpha: 0, beta: 0, gamma: 0 };
 let movementDetected = false;
 const MOVEMENT_THRESHOLD = 6;
-const MOVEMENT_COOLDOWN = 200; 
+const MOVEMENT_COOLDOWN = 200;
 
 const initDesktopDrift = () => {
   showInstruction("mueve el ratón para revelar los fragmentos");
@@ -245,15 +245,31 @@ const vibrate = () => {
 const revealFragment = (x, y) => {
   if (revealedCount >= REQUIRED_FRAGMENTS) return;
 
+  if (isMobile && revealedCount > 0) {
+    const previousFragments =
+      driftContainer.querySelectorAll(".drift-fragment");
+    previousFragments.forEach((frag) => {
+      frag.style.transition = "opacity 0.3s";
+      frag.style.opacity = "0";
+      setTimeout(() => frag.remove(), 300);
+    });
+  }
+
   const fragment = document.createElement("div");
   fragment.className = "drift-fragment";
   fragment.textContent = driftFragments[revealedCount];
 
-  const safeX = Math.max(20, Math.min(x, window.innerWidth - 320));
-  const safeY = Math.max(20, Math.min(y, window.innerHeight - 100));
+  if (isMobile) {
+    fragment.style.left = "50%";
+    fragment.style.top = "50%";
+    fragment.style.transform = "translate(-50%, -50%)";
+  } else {
+    const safeX = Math.max(20, Math.min(x, window.innerWidth - 320));
+    const safeY = Math.max(20, Math.min(y, window.innerHeight - 100));
 
-  fragment.style.left = safeX + "px";
-  fragment.style.top = safeY + "px";
+    fragment.style.left = safeX + "px";
+    fragment.style.top = safeY + "px";
+  }
 
   driftContainer.appendChild(fragment);
 
@@ -268,9 +284,39 @@ const revealFragment = (x, y) => {
 };
 
 const revealFragmentRandom = () => {
-  const x = Math.random() * (window.innerWidth - 320) + 20;
-  const y = Math.random() * (window.innerHeight - 100) + 20;
-  revealFragment(x, y);
+  if (isMobile) {
+    revealFragment(0, 0); // Los valores no importan en móvil
+  } else {
+    const x = Math.random() * (window.innerWidth - 320) + 20;
+    const y = Math.random() * (window.innerWidth - 100) + 20;
+    revealFragment(x, y);
+  }
+};
+
+const showSkipButton = () => {
+  const skipButton = document.createElement("button");
+  skipButton.textContent = "saltar";
+  skipButton.style.cssText = `
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 0;
+      background: transparent;
+      color: black;
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      z-index: 10000;
+      -webkit-tap-highlight-color: transparent;
+      opacity: 0.7;
+    `;
+
+  skipButton.onclick = () => {
+    completeDrift();
+  };
+
+  driftScreen.appendChild(skipButton);
 };
 
 const completeDrift = () => {
@@ -293,3 +339,5 @@ if (isMobile) {
 } else {
   initDesktopDrift();
 }
+
+showSkipButton();

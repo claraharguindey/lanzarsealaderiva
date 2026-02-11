@@ -78,7 +78,7 @@ const initMobileDrift = () => {
 
 const showPermissionButton = () => {
   const permButton = document.createElement("button");
-  permButton.textContent = "activar";
+  permButton.textContent = "comenzar";
   permButton.style.cssText = `
           position: fixed;
           top: 50%;

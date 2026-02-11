@@ -16,7 +16,7 @@ const startMotionDetection = () => {
   accelerationHistory = [];
   window.addEventListener("devicemotion", handleMotion);
   
-  showInstruction("camina para revelar");
+  showInstruction("camina o agita tu móvil como si estuvieses de paseo");
   showMovementIndicator();
   
   movementCheckInterval = setInterval(checkMovementStatus, 200);

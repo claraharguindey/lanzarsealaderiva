@@ -10,7 +10,7 @@ const miradas = [
     'quien mira solo hacia arriba',
     'quien camina sin destino',
     'quien cotillea',
-    'la inventora de atajos',
+    'quien inventa atajos',
 ];
 
 const generarBtn = document.getElementById('generar-mirada');

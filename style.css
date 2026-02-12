@@ -215,7 +215,6 @@
     border-bottom-color: var(--color-accent);
   }
   
-  /* Título centrado y protagonista */
   .info-corner.top-center {
     position: absolute;
     top: 50%;
@@ -372,9 +371,7 @@
   }
   
   .back-nav:hover {
-    background: var(--color-accent);
-    color: var(--color-background);
-    border-color: var(--color-accent);
+    font-size: 18px;
   }
   
   section {
@@ -646,6 +643,7 @@
   
     #content {
       padding: var(--spacing-lg) var(--spacing-md);
+      padding-top: 40px;
     }
   
     .generador-container {

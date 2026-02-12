@@ -249,7 +249,6 @@ const driftFragments = [
     const middle = recent[1];
     const isPeak = middle > recent[0] && middle > recent[2];
   
-    // MUY sensible para móviles
     const threshold = isAndroid ? 0.8 : 1.0;
   
     if (isPeak && stdDev > threshold) {

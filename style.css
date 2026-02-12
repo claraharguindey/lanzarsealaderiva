@@ -261,15 +261,15 @@ h3 {
 
 .dot-label {
   position: absolute;
-  top: -20px;
+  top: -35px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.3s;
   pointer-events: none;
-  padding: 6px;
+  padding: 16px;
   z-index: 30;
   letter-spacing: 1px;
   text-transform: uppercase;

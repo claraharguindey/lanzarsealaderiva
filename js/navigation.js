@@ -12,6 +12,11 @@ dots.forEach(dot => {
     dot.addEventListener('click', function() {
         const sectionId = this.getAttribute('data-section');
         
+        if (sectionId === 'drift') {
+            window.location.reload();
+            return;
+        }
+        
         if (currentSection && currentSection !== sectionId) {
             drawLineBetweenDots(currentSection, sectionId);
         }
@@ -73,7 +78,11 @@ const showSection = (sectionId) => {
         section.classList.remove('active');
     });
     
-    document.getElementById(sectionId).classList.add('active');
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
+    
     window.scrollTo(0, 0);
     
     if (typeof toggleImagePoints === 'function') {
@@ -88,11 +97,26 @@ const hideContent = () => {
     
     document.querySelectorAll('.dot').forEach(d => d.classList.remove('current'));
     if (currentSection) {
-        document.getElementById(`dot-${currentSection}`).classList.add('current');
+        const currentDot = document.getElementById(`dot-${currentSection}`);
+        if (currentDot) {
+            currentDot.classList.add('current');
+        }
     }
     
-    // Trigger para mostrar image points
     if (typeof toggleImagePoints === 'function') {
         toggleImagePoints();
     }
 }
+
+const randomizeDotPositions = () => {
+    const dots = document.querySelectorAll('.dot');
+    dots.forEach(dot => {
+        const randomX = (Math.random() - 0.5) * 100;
+        const randomY = (Math.random() - 0.5) * 100;
+        
+        const currentTransform = window.getComputedStyle(dot).transform;
+        dot.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    });
+};
+
+randomizeDotPositions();

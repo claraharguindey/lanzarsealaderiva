@@ -1,21 +1,14 @@
 const driftFragments = [
-    "mirar la ciudad es siempre un ejercicio político",
-    "cada cuerpo porta sus deseos",
-    "el juego no respeta los límites del parque",
-    "la ciudad fue diseñada para otros cuerpos",
-    "qué son estas fuentes clausuradas en el barrio de las aguas",
-    "el barrio se infla por unos lugares",
-    "y se desinfla por otros",
-    "allguien busca en las calles pequeñas y pintorescas",
-    "una ciudad que se torna imagen",
-    "no encontré ni un banco",
-    "en estas calles amables",
-    "llenas de cuerpos cansados",
-    "caminar desautomatiza la percepción",
-    "activa las geografías afectivas",
-    "y el espacio no es un contenedor vacío",
-    "es un campo de fuerzas y conflictos",
-  ];
+  "en un marco urbano en el que se nos empuja",
+  "a dirigirnos de un punto A",
+  "a un punto B",
+  "deambular se convierte en un acto político,",
+  "un ejercicio de escucha de la ciudad",
+  "en el que cuerpo, movimiento y espacio se entrecruzan",
+  "atendiendo tanto a lo visible",
+  "como a lo invisible del paisaje",
+];
+
   
   const driftScreen = document.getElementById("drift-screen");
   const driftContainer = document.getElementById("drift-container");
@@ -29,7 +22,7 @@ const driftFragments = [
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isAndroid = /Android/i.test(navigator.userAgent);
-  const REQUIRED_FRAGMENTS = 16;
+  const REQUIRED_FRAGMENTS = 8;
   const REVEAL_DISTANCE = 200;
   
   let accelerationHistory = [];

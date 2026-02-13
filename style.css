@@ -31,6 +31,41 @@
   --spacing-xl: 96px;
 }
 
+/* Selección de texto */
+::selection {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text);
+}
+
+/* Para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) var(--color-background);
+}
+
 body {
   font-family: "Ronzino", serif;
   font-size: 20px;
@@ -48,7 +83,7 @@ body {
 }
 
 a {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 h1 {

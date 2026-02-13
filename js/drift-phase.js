@@ -77,7 +77,7 @@ const driftFragments = [
   
   const showPermissionButton = () => {
     const permButton = document.createElement("button");
-    permButton.textContent = "pulsa aquí para comenzar";
+    permButton.textContent = "pulsa aquí";
     permButton.style.cssText = `
         position: fixed;
         top: 50%;

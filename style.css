@@ -250,6 +250,19 @@ img {
   font-weight: 400;
 }
 
+.info-corner.top-cccqs {
+  position: absolute;
+  top: var(--spacing-md);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: opacity 0.3s;
+  font-weight: 400;
+}
+
+.info-corner.top-cccqs:hover,
 .info-corner.top-left:hover,
 .info-corner.top-right:hover {
   opacity: 0.8;
@@ -549,6 +562,10 @@ section.active {
   border-bottom: 1px solid var(--color-border);
   padding: var(--spacing-md) 0;
   margin-bottom: var(--spacing-md);
+}
+
+.parada-foto {
+  max-width: 300px;
 }
 
 .info-item {
